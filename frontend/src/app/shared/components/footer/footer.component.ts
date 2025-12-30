@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
-    selector: 'app-footer',
-    imports: [RouterLink],
-    template: `
+  selector: 'app-footer',
+  imports: [RouterLink],
+  template: `
     <footer class="footer">
       <div class="container">
         <div class="footer-grid">
@@ -24,18 +25,17 @@ import { RouterLink } from '@angular/router';
             <h4>Explore</h4>
             <ul>
               <li><a routerLink="/properties">Browse Properties</a></li>
-              <li><a routerLink="/register">List Your Property</a></li>
+              <li><a [routerLink]="authService.isOwner() ? '/owner/properties/new' : '/register'">List Your Property</a></li>
               <li><a routerLink="/login">Sign In</a></li>
             </ul>
           </div>
           
-          <!-- Legal -->
           <div class="footer-links">
             <h4>Legal</h4>
             <ul>
-              <li><a href="#">Privacy Policy</a></li>
-              <li><a href="#">Terms of Service</a></li>
-              <li><a href="#">Cookie Policy</a></li>
+              <li><a routerLink="/privacy-policy">Privacy Policy</a></li>
+              <li><a routerLink="/terms-of-service">Terms of Service</a></li>
+              <li><a routerLink="/cookie-policy">Cookie Policy</a></li>
             </ul>
           </div>
           
@@ -56,7 +56,7 @@ import { RouterLink } from '@angular/router';
       </div>
     </footer>
   `,
-    styles: [`
+  styles: [`
     .footer {
       background: var(--color-charcoal);
       color: var(--color-silver);
@@ -162,5 +162,6 @@ import { RouterLink } from '@angular/router';
 })
 export class FooterComponent {
   currentYear = new Date().getFullYear();
+  constructor(public authService: AuthService) { }
 }
 

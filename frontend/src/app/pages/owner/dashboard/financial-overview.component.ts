@@ -4,9 +4,9 @@ import { AnalyticsService } from '../../../core/services/analytics.service';
 import { FinancialAnalytics } from '../../../core/models';
 
 @Component({
-    selector: 'app-financial-overview',
-    imports: [],
-    template: `
+  selector: 'app-financial-overview',
+  imports: [],
+  template: `
     <div class="financial-overview animate-fade-in-up">
       <div class="overview-header">
         <h3>Financial Overview</h3>
@@ -91,7 +91,7 @@ import { FinancialAnalytics } from '../../../core/models';
               >
               <div class="property-info">
                 <span class="property-title">{{ property.title }}</span>
-                <span class="property-revenue">\${{ property.revenue?.toLocaleString() }}</span>
+                <span class="property-revenue">\${{ property.revenue.toLocaleString() }}</span>
               </div>
               <div class="property-metrics">
                 <span class="occupancy">{{ property.occupancyRate }}% occupied</span>
@@ -102,7 +102,7 @@ import { FinancialAnalytics } from '../../../core/models';
       </div>
     </div>
     `,
-    styles: [`
+  styles: [`
     .financial-overview {
       background: white;
       border-radius: 12px;

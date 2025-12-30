@@ -3,11 +3,16 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { BookingService } from '../../../core/services/booking.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { RatingService } from '../../../core/services/rating.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { Booking } from '../../../core/models';
+import { StarRatingComponent } from '../../../shared/components/star-rating/star-rating.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-tenant-dashboard',
-  imports: [CommonModule, RouterLink],
+  standalone: true,
+  imports: [CommonModule, RouterLink, StarRatingComponent, FormsModule],
   template: `
     <div class="dashboard-page">
       <div class="container">
@@ -87,21 +92,52 @@ import { Booking } from '../../../core/models';
                         <span class="material-icons-outlined">home</span>
                       }
                     </div>
-                    <div class="booking-info">
-                      <h3>{{ booking.property_title }}</h3>
-                      <p class="location">{{ booking.property_location }}</p>
-                      <div class="booking-meta">
-                        <span class="price">\${{ booking.property_rent }}/mo</span>
-                        <span class="badge" [class]="booking.status.toLowerCase()">
-                          {{ booking.status }}
-                        </span>
+                    
+                    <div class="booking-content">
+                      <div class="booking-header-row">
+                        <div class="title-section">
+                          <h3>{{ booking.property_title }}</h3>
+                          <p class="location-text">
+                            <span class="material-icons-outlined">location_on</span>
+                            {{ booking.property_location }}
+                          </p>
+                        </div>
+                        <div class="date-section">
+                          <span class="material-icons-outlined">calendar_today</span>
+                          {{ booking.request_time | date:'mediumDate' }}
+                        </div>
                       </div>
-                    </div>
-                    <div class="booking-details">
-                       <span title="Booking Date">
-                        <span class="material-icons-outlined">calendar_today</span>
-                        {{ booking.request_time | date:'mediumDate' }}
-                      </span>
+
+                      <div class="booking-footer-row">
+                        <div class="status-section">
+                          <span class="price-tag">\${{ booking.property_rent }}/mo</span>
+                          <span class="badge" [class]="booking.status.toLowerCase()">
+                            {{ booking.status }}
+                          </span>
+                        </div>
+
+                        <!-- Rating Section on Card -->
+                        @if (booking.status === 'Approved') {
+                          <div class="card-rating-section" (click)="$event.stopPropagation()">
+                            <div class="rating-group">
+                              <span class="rating-label">Rate property</span>
+                              <app-star-rating 
+                                [value]="getPropertyRating(booking.property_id)"
+                                (ratingChange)="onRateProperty(booking.property_id, $event)"
+                                [size]="16"
+                              ></app-star-rating>
+                            </div>
+                            <div class="rating-group">
+                              <span class="rating-label">Rate owner</span>
+                              <app-star-rating 
+                                [value]="getUserRating(booking.owner_id)"
+                                (ratingChange)="onRateOwner(booking.owner_id, $event)"
+                                [size]="16"
+                              ></app-star-rating>
+                            </div>
+                          </div>
+                        }
+                      </div>
                     </div>
                   </div>
                 }
@@ -117,79 +153,99 @@ import { Booking } from '../../../core/models';
         </div>
       </div>
 
-        @if (selectedBooking()) {
-          <div class="modal-overlay" (click)="closeBookingDetails()">
-            <div class="modal-content" (click)="$event.stopPropagation()">
-              <button class="close-btn" (click)="closeBookingDetails()">
-                <span class="material-icons-outlined">close</span>
-              </button>
-              
-              <div class="modal-header">
-                <h2>{{ selectedBooking()?.property_title }}</h2>
-                <span class="badge" [class]="selectedBooking()?.status?.toLowerCase()">
-                  {{ selectedBooking()?.status }}
-                </span>
+      @if (selectedBooking()) {
+        <div class="modal-overlay" (click)="closeBookingDetails()">
+          <div class="modal-content" (click)="$event.stopPropagation()">
+            <button class="close-btn" (click)="closeBookingDetails()">
+              <span class="material-icons-outlined">close</span>
+            </button>
+            
+            <div class="modal-header">
+              <h2>{{ selectedBooking()?.property_title }}</h2>
+              <span class="badge" [class]="selectedBooking()?.status?.toLowerCase()">
+                {{ selectedBooking()?.status }}
+              </span>
+            </div>
+
+            <div class="modal-body">
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="label">Location</span>
+                  <span class="value">{{ selectedBooking()?.property_location }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">Rent</span>
+                  <span class="value">\${{ selectedBooking()?.property_rent }}/mo</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">Request Date</span>
+                  <span class="value">{{ selectedBooking()?.request_time | date:'mediumDate' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">Duration</span>
+                  <span class="value">{{ selectedBooking()?.duration_months }} months</span>
+                </div>
               </div>
 
-              <div class="modal-body">
-                <div class="info-grid">
-                  <div class="info-item">
-                    <span class="label">Location</span>
-                    <span class="value">{{ selectedBooking()?.property_location }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="label">Rent</span>
-                    <span class="value">\${{ selectedBooking()?.property_rent }}/mo</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="label">Request Date</span>
-                    <span class="value">{{ selectedBooking()?.request_time | date:'mediumDate' }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="label">Duration</span>
-                    <span class="value">{{ selectedBooking()?.duration_months }} months</span>
-                  </div>
+              @if (selectedBooking()?.message) {
+                <div class="message-section">
+                  <h3>Your Message</h3>
+                  <p>"{{ selectedBooking()?.message }}"</p>
                 </div>
+              }
 
-                @if (selectedBooking()?.message) {
-                  <div class="message-section">
-                    <h3>Your Message</h3>
-                    <p>"{{ selectedBooking()?.message }}"</p>
-                  </div>
-                }
-
-                @if (selectedBooking()?.status === 'Approved') {
-                  <div class="owner-details animate-fade-in">
-                    <h3>Owner Contact Details</h3>
-                    <div class="contact-grid">
-                      <div class="contact-item">
-                        <span class="material-icons-outlined">person</span>
-                        <div>
-                          <span class="label">Name</span>
-                          <span class="value">{{ selectedBooking()?.owner_name }}</span>
-                        </div>
+              @if (selectedBooking()?.status === 'Approved') {
+                <div class="owner-details animate-fade-in">
+                  <h3>Owner Contact Details</h3>
+                  <div class="contact-grid">
+                    <div class="contact-item">
+                      <span class="material-icons-outlined">person</span>
+                      <div>
+                        <span class="label">Name</span>
+                        <span class="value">{{ selectedBooking()?.owner_name }}</span>
                       </div>
-                      <div class="contact-item">
-                        <span class="material-icons-outlined">email</span>
-                        <div>
-                          <span class="label">Email</span>
-                          <span class="value">{{ selectedBooking()?.owner_email }}</span>
-                        </div>
+                    </div>
+                    <div class="contact-item">
+                      <span class="material-icons-outlined">email</span>
+                      <div>
+                        <span class="label">Email</span>
+                        <span class="value">{{ selectedBooking()?.owner_email }}</span>
                       </div>
-                      <div class="contact-item">
-                        <span class="material-icons-outlined">phone</span>
-                        <div>
-                          <span class="label">Phone</span>
-                          <span class="value">{{ selectedBooking()?.owner_phone }}</span>
-                        </div>
+                    </div>
+                    <div class="contact-item">
+                      <span class="material-icons-outlined">phone</span>
+                      <div>
+                        <span class="label">Phone</span>
+                        <span class="value">{{ selectedBooking()?.owner_phone }}</span>
                       </div>
                     </div>
                   </div>
-                }
-              </div>
+                </div>
+
+                <!-- Rating Section in Modal -->
+                <div class="modal-rating-section animate-fade-in">
+                  <div class="rating-box">
+                    <label>Rate Property</label>
+                    <app-star-rating 
+                      [value]="getPropertyRating(selectedBooking()!.property_id)"
+                      (ratingChange)="onRateProperty(selectedBooking()!.property_id, $event)"
+                      [size]="24"
+                    ></app-star-rating>
+                  </div>
+                  <div class="rating-box">
+                    <label>Rate Owner ({{ selectedBooking()?.owner_name }})</label>
+                    <app-star-rating 
+                      [value]="getUserRating(selectedBooking()!.owner_id)"
+                      (ratingChange)="onRateOwner(selectedBooking()!.owner_id, $event)"
+                      [size]="24"
+                    ></app-star-rating>
+                  </div>
+                </div>
+              }
             </div>
           </div>
-        }
+        </div>
+      }
     </div>
   `,
   styles: [`
@@ -311,88 +367,137 @@ import { Booking } from '../../../core/models';
 
     .booking-item {
       display: flex;
-      align-items: center;
-      gap: var(--space-md);
-      padding: var(--space-md);
-      background: var(--color-off-white);
-      border-radius: var(--radius-md);
+      align-items: stretch;
+      gap: var(--space-xl);
+      padding: var(--space-lg);
+      background: white;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-off-white);
       transition: all var(--transition-fast);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 
       &:hover {
-        background: var(--color-silver);
+        background: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.06);
         cursor: pointer;
       }
     }
 
     .booking-image {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       border-radius: var(--radius-md);
-      background: var(--color-silver);
+      background: var(--color-off-white);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      border: 1px solid rgba(0,0,0,0.03);
 
-      img { width: 100%; height: 100%; object-fit: cover; }
-      .material-icons-outlined { font-size: 2rem; color: var(--color-medium-gray); }
+      img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+      .material-icons-outlined { font-size: 2.5rem; color: var(--color-silver); }
     }
 
-    .booking-info {
+    .booking-item:hover .booking-image img {
+      transform: scale(1.05);
+    }
+
+    .booking-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0; /* Important for text truncation/wrapping */
+      gap: var(--space-md);
+    }
+
+    .booking-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-lg);
+    }
+
+    .title-section {
       flex: 1;
       min-width: 0;
 
       h3 {
-        font-size: 1rem;
+        font-size: 1.1rem;
         font-family: 'DM Sans', sans-serif;
         font-weight: 600;
         margin-bottom: 4px;
+        color: var(--color-charcoal);
+        line-height: 1.3;
       }
 
-      .location {
+      .location-text {
         font-size: 0.85rem;
         color: var(--color-medium-gray);
-        margin-bottom: var(--space-sm);
-      }
-
-      .booking-meta {
         display: flex;
-        align-items: center;
-        gap: var(--space-sm);
+        align-items: flex-start;
+        gap: 4px;
+        line-height: 1.4;
 
-        .price {
-          font-size: 0.9rem;
-          font-weight: 600;
+        .material-icons-outlined {
+          font-size: 1rem;
           color: var(--color-charcoal);
-        }
-
-        .badge {
-          padding: 2px 8px;
-          font-size: 0.7rem;
-          border-radius: 50px;
-          text-transform: uppercase;
-          font-weight: 600;
-
-          &.pending { background: var(--color-warning); color: var(--color-charcoal); }
-          &.approved { background: var(--color-success); color: white; }
-          &.rejected { background: var(--color-error); color: white; }
+          margin-top: 2px;
         }
       }
     }
 
-    .booking-details {
+    .date-section {
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: var(--space-xs);
-      
-       span {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        font-size: 0.8rem;
-        color: var(--color-gray);
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: white;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      color: var(--color-gray);
+      white-space: nowrap;
+      border: 1px solid rgba(0,0,0,0.03);
+
+      .material-icons-outlined {
+        font-size: 0.9rem;
+      }
+    }
+
+    .booking-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+      padding-top: var(--space-md);
+      border-top: 1px dashed rgba(0,0,0,0.05);
+    }
+
+    .status-section {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+
+      .price-tag {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--color-charcoal);
+        font-family: 'Playfair Display', serif;
+      }
+
+      .badge {
+        padding: 4px 12px;
+        font-size: 0.7rem;
+        border-radius: 50px;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+
+        &.pending { background: var(--color-warning); color: var(--color-charcoal); }
+        &.approved { background: var(--color-success); color: white; }
+        &.rejected { background: var(--color-error); color: white; }
       }
     }
 
@@ -598,6 +703,52 @@ import { Booking } from '../../../core/models';
       from { transform: translateY(20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+
+    /* Rating specific styles */
+    .card-rating-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+
+      .rating-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 2px;
+      }
+    }
+
+    .rating-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--color-medium-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .modal-rating-section {
+      margin-top: var(--space-xl);
+      padding-top: var(--space-xl);
+      border-top: 1px dashed var(--color-off-white);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .rating-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+      
+      label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--color-gray);
+        text-transform: uppercase;
+      }
+    }
   `]
 })
 export class TenantDashboardComponent implements OnInit {
@@ -605,8 +756,14 @@ export class TenantDashboardComponent implements OnInit {
   loading = signal(true);
   selectedBooking = signal<Booking | null>(null);
 
+  // Track ratings locally
+  propertyRatings = signal<Record<number, number>>({});
+  userRatings = signal<Record<number, number>>({});
+
   constructor(
     private bookingService: BookingService,
+    private ratingService: RatingService,
+    private notification: NotificationService,
     public auth: AuthService
   ) { }
 
@@ -640,5 +797,41 @@ export class TenantDashboardComponent implements OnInit {
 
   closeBookingDetails() {
     this.selectedBooking.set(null);
+  }
+
+  getPropertyRating(propertyId: number): number {
+    return this.propertyRatings()[propertyId] || 0;
+  }
+
+  getUserRating(userId: number): number {
+    return this.userRatings()[userId] || 0;
+  }
+
+  onRateProperty(propertyId: number, rating: number) {
+    this.ratingService.submitPropertyRating(propertyId, rating).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.notification.success('Property rated successfully!');
+          this.propertyRatings.update(prev => ({ ...prev, [propertyId]: rating }));
+        }
+      },
+      error: (err) => {
+        this.notification.error(err.error?.message || 'Failed to submit rating');
+      }
+    });
+  }
+
+  onRateOwner(ownerId: number, rating: number) {
+    this.ratingService.submitUserRating(ownerId, rating).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.notification.success('Owner rated successfully!');
+          this.userRatings.update(prev => ({ ...prev, [ownerId]: rating }));
+        }
+      },
+      error: (err) => {
+        this.notification.error(err.error?.message || 'Failed to submit rating');
+      }
+    });
   }
 }

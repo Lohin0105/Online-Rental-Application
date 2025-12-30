@@ -3,12 +3,13 @@ import { Component, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PropertyCardComponent } from '../../shared/components/property-card/property-card.component';
 import { PropertyService } from '../../core/services/property.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Property } from '../../core/models';
 
 @Component({
-    selector: 'app-home',
-    imports: [RouterLink, PropertyCardComponent],
-    template: `
+  selector: 'app-home',
+  imports: [RouterLink, PropertyCardComponent],
+  template: `
     <!-- Hero Section -->
     <section class="hero">
       <div class="hero-bg">
@@ -34,7 +35,7 @@ import { Property } from '../../core/models';
               Browse Properties
               <span class="material-icons-outlined">arrow_forward</span>
             </a>
-            <a routerLink="/register" class="btn btn-secondary btn-lg">
+            <a [routerLink]="authService.isOwner() ? '/owner/properties/new' : '/register'" class="btn btn-secondary btn-lg">
               List Your Property
             </a>
           </div>
@@ -164,7 +165,7 @@ import { Property } from '../../core/models';
             <h2>Ready to Find Your Haven?</h2>
             <p>Join thousands of happy tenants who found their perfect home with us</p>
             <div class="cta-actions">
-              <a routerLink="/register" class="btn btn-accent btn-lg">
+              <a [routerLink]="authService.isAuthenticated() ? (authService.isOwner() ? '/owner/dashboard' : '/tenant/dashboard') : '/register'" class="btn btn-accent btn-lg">
                 Get Started Free
               </a>
               <a routerLink="/properties" class="btn btn-ghost">
@@ -180,7 +181,7 @@ import { Property } from '../../core/models';
       </div>
     </section>
   `,
-    styles: [`
+  styles: [`
     /* Hero Section */
     .hero {
       position: relative;
@@ -533,13 +534,16 @@ import { Property } from '../../core/models';
 export class HomeComponent implements OnInit {
   featuredProperties = signal<Property[]>([]);
   loading = signal(true);
-  
-  constructor(private propertyService: PropertyService) {}
-  
+
+  constructor(
+    private propertyService: PropertyService,
+    public authService: AuthService
+  ) { }
+
   ngOnInit() {
     this.loadFeaturedProperties();
   }
-  
+
   loadFeaturedProperties() {
     this.propertyService.getAllProperties({ limit: 4 }).subscribe({
       next: (response) => {

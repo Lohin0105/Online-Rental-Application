@@ -6,14 +6,14 @@ import { BookingService } from '../../../core/services/booking.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Property, Booking, BookingStats } from '../../../core/models';
-import { FinancialOverviewComponent } from './financial-overview.component';
 import { StarRatingComponent } from '../../../shared/components/star-rating/star-rating.component';
 import { RatingService } from '../../../core/services/rating.service';
 import { interval, Subscription, startWith, switchMap, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-owner-dashboard',
-  imports: [CommonModule, RouterLink, StarRatingComponent, FinancialOverviewComponent],
+  standalone: true,
+  imports: [CommonModule, RouterLink, StarRatingComponent],
   template: `
     <div class="dashboard-page">
       <div class="container">

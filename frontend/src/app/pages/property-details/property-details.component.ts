@@ -153,8 +153,15 @@ import { StarRatingComponent } from '../../shared/components/star-rating/star-ra
                             }
                           </div>
                           <div class="reviewer-info">
-                            <span class="reviewer-name">{{ review.reviewer_name }}</span>
-                            <span class="review-date">{{ review.created_at | date }}</span>
+                            <div class="reviewer-meta">
+                              <span class="reviewer-name">{{ review.reviewer_name }}</span>
+                              <span class="review-date">{{ review.created_at | date }}</span>
+                            </div>
+                            <app-star-rating 
+                              [value]="review.rating" 
+                              [readOnly]="true" 
+                              [size]="14"
+                            ></app-star-rating>
                           </div>
                         </div>
                         @if (review.comment) {
@@ -680,6 +687,13 @@ import { StarRatingComponent } from '../../shared/components/star-rating/star-ra
       flex: 1;
       display: flex;
       flex-direction: column;
+      gap: 4px;
+
+      .reviewer-meta {
+         display: flex;
+         align-items: center;
+         gap: var(--space-md);
+      }
 
       .reviewer-name {
         font-weight: 600;

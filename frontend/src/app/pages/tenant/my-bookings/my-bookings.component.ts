@@ -537,6 +537,29 @@ import { interval, Subscription, startWith, switchMap } from 'rxjs';
         a:hover { border-bottom-style: solid; }
       }
     }
+
+    .rating-section {
+      margin: var(--space-lg) 0;
+      padding: var(--space-md);
+      background: var(--color-off-white);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .rating-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--color-medium-gray);
+        text-transform: uppercase;
+      }
+    }
   `]
 })
 export class MyBookingsComponent implements OnInit, OnDestroy {

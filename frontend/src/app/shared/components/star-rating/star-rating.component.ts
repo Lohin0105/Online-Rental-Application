@@ -2,14 +2,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-star-rating',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-star-rating',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
     <div class="star-rating" [class.interactive]="!readOnly" [style.font-size.px]="size">
       @for (star of [1, 2, 3, 4, 5]; track star) {
         <span 
-          class="material-icons"
+          class="material-icons-outlined"
           [class.filled]="isFilled(star)"
           [class.half]="isHalf(star)"
           (click)="onStarClick(star)"
@@ -24,7 +24,7 @@ import { CommonModule } from '@angular/common';
       }
     </div>
   `,
-    styles: [`
+  styles: [`
     .star-rating {
       display: inline-flex;
       align-items: center;
@@ -32,7 +32,7 @@ import { CommonModule } from '@angular/common';
       color: var(--color-silver, #ccc);
       user-select: none;
       
-      .material-icons {
+      .material-icons-outlined {
         cursor: default;
         transition: transform 0.1s ease;
         
@@ -46,7 +46,7 @@ import { CommonModule } from '@angular/common';
       }
       
       &.interactive {
-        .material-icons {
+        .material-icons-outlined {
           cursor: pointer;
           &:hover {
             transform: scale(1.2);
@@ -64,47 +64,47 @@ import { CommonModule } from '@angular/common';
   `]
 })
 export class StarRatingComponent {
-    @Input() value: number = 0;
-    @Input() readOnly: boolean = false;
-    @Input() size: number = 24;
-    @Input() showValue: boolean = false;
+  @Input() value: number = 0;
+  @Input() readOnly: boolean = false;
+  @Input() size: number = 24;
+  @Input() showValue: boolean = false;
 
-    @Output() ratingChange = new EventEmitter<number>();
+  @Output() ratingChange = new EventEmitter<number>();
 
-    hoverValue: number = 0;
+  hoverValue: number = 0;
 
-    onStarClick(star: number) {
-        if (!this.readOnly) {
-            this.value = star;
-            this.ratingChange.emit(this.value);
-        }
+  onStarClick(star: number) {
+    if (!this.readOnly) {
+      this.value = star;
+      this.ratingChange.emit(this.value);
     }
+  }
 
-    onMouseEnter(star: number) {
-        if (!this.readOnly) {
-            this.hoverValue = star;
-        }
+  onMouseEnter(star: number) {
+    if (!this.readOnly) {
+      this.hoverValue = star;
     }
+  }
 
-    onMouseLeave() {
-        if (!this.readOnly) {
-            this.hoverValue = 0;
-        }
+  onMouseLeave() {
+    if (!this.readOnly) {
+      this.hoverValue = 0;
     }
+  }
 
-    isFilled(star: number): boolean {
-        const compareValue = this.hoverValue || this.value;
-        return star <= compareValue;
-    }
+  isFilled(star: number): boolean {
+    const compareValue = this.hoverValue || this.value;
+    return star <= compareValue;
+  }
 
-    isHalf(star: number): boolean {
-        if (this.hoverValue > 0) return false;
-        return star > this.value && star - 0.5 <= this.value;
-    }
+  isHalf(star: number): boolean {
+    if (this.hoverValue > 0) return false;
+    return star > this.value && star - 0.5 <= this.value;
+  }
 
-    getStarIcon(star: number): string {
-        if (this.isFilled(star)) return 'star';
-        if (this.isHalf(star)) return 'star_half';
-        return 'star_outline';
-    }
+  getStarIcon(star: number): string {
+    if (this.isFilled(star)) return 'star';
+    if (this.isHalf(star)) return 'star_half';
+    return 'star_outline';
+  }
 }
