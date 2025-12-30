@@ -1,0 +1,150 @@
+<div class="admin-dashboard">
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading admin data...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+    <div class="error-container">
+      <mat-card>
+        <mat-card-content>
+          <h2>⚠️ Error</h2>
+          <p>{{ error() }}</p>
+          <button mat-flat-button color="primary" (click)="manualRefresh()">Retry</button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  <!-- Main Content -->
+  @if (!loading() && !error()) {
+    <div class="content animate-fade-in">
+      <div class="header-section">
+        <div class="header-content">
+          <div>
+            <h1 class="dashboard-title">Admin Dashboard</h1>
+            <p class="dashboard-subtitle">System-wide monitoring (Read-Only)</p>
+          </div>
+          <div class="header-actions">
+            @if (lastUpdated()) {
+              <span class="last-updated">
+                Updated: {{ lastUpdated() | date:'mediumTime' }}
+              </span>
+            }
+            <button mat-stroked-button color="primary" (click)="manualRefresh()">
+              Refresh
+            </button>
+          </div>
+        </div>
+      </div>
+      <mat-tab-group animationDuration="500ms">
+        <!-- Properties Tab -->
+        <mat-tab label="Properties ({{ properties().length }})">
+          <div class="tab-content">
+            <mat-card class="data-card">
+              <mat-card-header>
+                <mat-card-title>All Listed Properties</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="table-container">
+                  <table mat-table [dataSource]="properties()" class="mat-elevation-z0">
+                    <!-- Property ID Column -->
+                    <ng-container matColumnDef="id">
+                      <th mat-header-cell *matHeaderCellDef>Property ID</th>
+                      <td mat-cell *matCellDef="let property">#{{ property.id }}</td>
+                    </ng-container>
+                    <!-- Title Column -->
+                    <ng-container matColumnDef="title">
+                      <th mat-header-cell *matHeaderCellDef>Title</th>
+                      <td mat-cell *matCellDef="let property">{{ property.title }}</td>
+                    </ng-container>
+                    <!-- Location Column -->
+                    <ng-container matColumnDef="location">
+                      <th mat-header-cell *matHeaderCellDef>Location</th>
+                      <td mat-cell *matCellDef="let property">{{ property.location }}</td>
+                    </ng-container>
+                    <!-- Rent Column -->
+                    <ng-container matColumnDef="rent">
+                      <th mat-header-cell *matHeaderCellDef>Rent</th>
+                      <td mat-cell *matCellDef="let property">{{ formatCurrency(property.rent) }}</td>
+                    </ng-container>
+                    <!-- Owner ID Column -->
+                    <ng-container matColumnDef="owner_id">
+                      <th mat-header-cell *matHeaderCellDef>Owner ID</th>
+                      <td mat-cell *matCellDef="let property">User #{{ property.owner_id }}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="propertiesColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: propertiesColumns;"></tr>
+                  </table>
+                  @if (properties().length === 0) {
+                    <div class="no-data-msg">
+                      <p>No properties found in the system.</p>
+                    </div>
+                  }
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </mat-tab>
+        <!-- Bookings Tab -->
+        <mat-tab label="Bookings ({{ bookings().length }})">
+          <div class="tab-content">
+            <mat-card class="data-card">
+              <mat-card-header>
+                <mat-card-title>All Booking Requests</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="table-container">
+                  <table mat-table [dataSource]="bookings()" class="mat-elevation-z0">
+                    <!-- Booking ID Column -->
+                    <ng-container matColumnDef="id">
+                      <th mat-header-cell *matHeaderCellDef>Booking ID</th>
+                      <td mat-cell *matCellDef="let booking">#{{ booking.id }}</td>
+                    </ng-container>
+                    <!-- Property ID Column -->
+                    <ng-container matColumnDef="property_id">
+                      <th mat-header-cell *matHeaderCellDef>Property ID</th>
+                      <td mat-cell *matCellDef="let booking">#{{ booking.property_id }}</td>
+                    </ng-container>
+                    <!-- Tenant ID Column -->
+                    <ng-container matColumnDef="tenant_id">
+                      <th mat-header-cell *matHeaderCellDef>Tenant ID</th>
+                      <td mat-cell *matCellDef="let booking">User #{{ booking.tenant_id }}</td>
+                    </ng-container>
+                    <!-- Status Column -->
+                    <ng-container matColumnDef="status">
+                      <th mat-header-cell *matHeaderCellDef>Status</th>
+                      <td mat-cell *matCellDef="let booking">
+                        <mat-chip [color]="getStatusColor(booking.status)" selected>
+                          {{ booking.status }}
+                        </mat-chip>
+                      </td>
+                    </ng-container>
+                    <!-- Request Time Column -->
+                    <ng-container matColumnDef="request_time">
+                      <th mat-header-cell *matHeaderCellDef>Request Time</th>
+                      <td mat-cell *matCellDef="let booking">
+                        {{ formatDate(booking.request_time) }}
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="bookingsColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: bookingsColumns;"></tr>
+                  </table>
+                  @if (bookings().length === 0) {
+                    <div class="no-data-msg">
+                      <p>No bookings found in the system.</p>
+                    </div>
+                  }
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  }
+</div>
