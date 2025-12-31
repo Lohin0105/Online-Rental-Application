@@ -94,7 +94,7 @@ import { Booking } from '../../../core/models';
                       <h3>{{ booking.property_title }}</h3>
                       <p class="location">{{ booking.property_location }}</p>
                       <div class="booking-meta">
-                        <span class="price">\${{ booking.property_rent }}/mo</span>
+                        <span class="price">₹{{ booking.property_rent }}/mo</span>
                         <span class="badge" [class]="booking.status.toLowerCase()">
                           {{ booking.status }}
                         </span>

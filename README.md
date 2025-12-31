@@ -444,7 +444,7 @@ How to Use:
 Example:
 - Your search: "cheap apartment"
 - AI suggests:
-- "Studio apartments under $1000"
+- "Studio apartments under ₹50,000"
 - "Budget-friendly rentals near transit"
 - "Affordable 1BR units"
 

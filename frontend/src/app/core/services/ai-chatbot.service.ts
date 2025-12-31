@@ -103,7 +103,7 @@ IMPORTANT RESPONSE RULES:
     propertyType?: string;
   }): Promise<string> {
     const prompt = `Give a brief price estimate for this rental:
-- Budget: ${preferences.budget ? `$${preferences.budget}/month` : 'Not specified'}
+- Budget: ${preferences.budget ? `\u20b9${preferences.budget}/month` : 'Not specified'}
 - Location: ${preferences.location || 'Any'}
 - Bedrooms: ${preferences.bedrooms || 'Any'}
 - Property Type: ${preferences.propertyType || 'Any'}
@@ -201,7 +201,7 @@ pet friendly rentals`;
 If user mentions "2bhk" or "2BHK", interpret as 2 bedrooms.
 If user mentions "3bhk" or "3BHK", interpret as 3 bedrooms.
 If location is not specified but context suggests India (Bangalore, Mumbai, etc), use that.
-If budget is mentioned as "cheap" or "affordable", suggest maxRent: 2000.
+If budget is mentioned as "cheap" or "affordable", suggest maxRent: 50000.
 
 Output ONLY a JSON object:
 {

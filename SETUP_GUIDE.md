@@ -237,7 +237,7 @@ geminiApiKey: 'AIzaSy...' // Your actual key
 
 2. Smart Property Search (RAG)
 - Natural language queries
-- Example: "2 bedroom apartment downtown under $2000"
+- Example: "2 bedroom apartment downtown under ₹50,000"
 - AI extracts filters automatically
 
 3. Price Calculator

@@ -43,7 +43,7 @@ export const notifyTenantsNewProperty = async (tenants: string[], property: any,
       <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0;">
         <h3 style="margin-top: 0;">${property.title}</h3>
         <p><strong>Location:</strong> ${property.location}</p>
-        <p><strong>Rent:</strong> $${property.rent}/month</p>
+        <p><strong>Rent:</strong> ₹${property.rent}/month</p>
         <p>${property.description}</p>
       </div>
       <p>Please check it out if you are interested.</p>

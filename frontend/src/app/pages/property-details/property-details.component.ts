@@ -176,7 +176,7 @@ import { StarRatingComponent } from '../../shared/components/star-rating/star-ra
             <aside class="details-sidebar animate-slide-right">
               <div class="booking-card">
                 <div class="price">
-                  <span class="amount">\${{ property()!.rent | number }}</span>
+                  <span class="amount">₹{{ property()!.rent | number }}</span>
                   <span class="period">/month</span>
                 </div>
 

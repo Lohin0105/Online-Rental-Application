@@ -87,7 +87,7 @@ import { StarRatingComponent } from '../star-rating/star-rating.component';
         
         <div class="card-footer">
           <div class="price">
-            <span class="amount">\${{ property.rent | number }}</span>
+            <span class="amount">₹{{ property.rent | number }}</span>
             <span class="period">/month</span>
           </div>
           

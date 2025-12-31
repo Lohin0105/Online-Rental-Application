@@ -64,7 +64,7 @@ import { StarRatingComponent } from '../../../shared/components/star-rating/star
                         <span class="material-icons-outlined">location_on</span>
                         {{ booking.property_location }}
                       </p>
-                      <p class="rent">\${{ booking.property_rent | number }}/month</p>
+                      <p class="rent">₹{{ booking.property_rent | number }}/month</p>
                     </div>
                   </div>
 

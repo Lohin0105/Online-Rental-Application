@@ -325,7 +325,7 @@ User Flow:
 2. Sees price calculator at top of form
 3. Fills in property details
 4. Clicks "Calculate Estimate"
-5. AI analyzes and returns: "Estimated rent: $2,000-$2,500. Key factor: Prime downtown location. Tip: Research similar 2BR listings nearby."
+5. AI analyzes and returns: "Estimated rent: ₹50,000-₹62,500. Key factor: Prime downtown location. Tip: Research similar 2BR listings nearby."
 6. Owner uses estimate to set property rent
 
 Code Location:

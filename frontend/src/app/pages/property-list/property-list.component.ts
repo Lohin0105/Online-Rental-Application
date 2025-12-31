@@ -39,7 +39,7 @@ import { Property, PropertyFilters } from '../../core/models';
                 <input 
                   type="text" 
                   class="form-input smart-search"
-                  placeholder="What type of property are you looking for? (e.g., '2BR apartment downtown under $2000')"
+                  placeholder="What type of property are you looking for? (e.g., '2BR apartment downtown under \u20b950000')"
                   [(ngModel)]="naturalSearchQuery"
                   (keyup.enter)="performSmartSearch()"
                 >

@@ -166,7 +166,7 @@ export const getRecentActivities = async (req: AuthRequest, res: Response): Prom
           id: 3,
           type: 'payment_received',
           title: 'Payment Received',
-          description: 'Monthly rent payment received for Luxury Villa with Garden - $4,500',
+          description: 'Monthly rent payment received for Luxury Villa with Garden - ₹4,500',
           timestamp: '2024-01-19T09:00:00.000Z',
           icon: 'payments',
           color: 'success'

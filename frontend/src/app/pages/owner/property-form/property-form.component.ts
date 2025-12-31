@@ -76,7 +76,7 @@ import { PriceCalculatorComponent } from '../../../shared/components/price-calcu
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Monthly Rent ($) *</label>
+                  <label class="form-label">Monthly Rent (₹) *</label>
                   <input 
                     type="number" 
                     class="form-input"
