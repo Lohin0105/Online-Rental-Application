@@ -110,7 +110,7 @@ import { FormsModule } from '@angular/forms';
 
                       <div class="booking-footer-row">
                         <div class="status-section">
-                          <span class="price-tag">\${{ booking.property_rent }}/mo</span>
+                          <span class="price-tag">₹{{ booking.property_rent }}/mo</span>
                           <span class="badge" [class]="booking.status.toLowerCase()">
                             {{ booking.status }}
                           </span>
@@ -175,7 +175,7 @@ import { FormsModule } from '@angular/forms';
                 </div>
                 <div class="info-item">
                   <span class="label">Rent</span>
-                  <span class="value">\${{ selectedBooking()?.property_rent }}/mo</span>
+                  <span class="value">₹{{ selectedBooking()?.property_rent }}/mo</span>
                 </div>
                 <div class="info-item">
                   <span class="label">Request Date</span>

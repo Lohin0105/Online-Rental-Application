@@ -21,18 +21,18 @@ async function seedDatabase() {
 
     // ============ SEED USERS ============
     console.log('👥 Creating users...');
-    
+
     const users = [
       // Owners
-      { email: 'john.owner@email.com', name: 'John Smith', phone: '555-0101', role: 'owner' },
-      { email: 'sarah.owner@email.com', name: 'Sarah Johnson', phone: '555-0102', role: 'owner' },
-      { email: 'mike.owner@email.com', name: 'Mike Williams', phone: '555-0103', role: 'owner' },
+      { email: 'rajesh.owner@email.com', name: 'Rajesh Kumar', phone: '9876543210', role: 'owner' },
+      { email: 'priya.owner@email.com', name: 'Priya Sharma', phone: '9876543211', role: 'owner' },
+      { email: 'amit.owner@email.com', name: 'Amit Patel', phone: '9876543212', role: 'owner' },
       // Tenants
-      { email: 'alice.tenant@email.com', name: 'Alice Brown', phone: '555-0201', role: 'tenant' },
-      { email: 'bob.tenant@email.com', name: 'Bob Davis', phone: '555-0202', role: 'tenant' },
-      { email: 'carol.tenant@email.com', name: 'Carol Wilson', phone: '555-0203', role: 'tenant' },
-      { email: 'david.tenant@email.com', name: 'David Miller', phone: '555-0204', role: 'tenant' },
-      { email: 'emma.tenant@email.com', name: 'Emma Taylor', phone: '555-0205', role: 'tenant' },
+      { email: 'anjali.tenant@email.com', name: 'Anjali Gupta', phone: '9876543213', role: 'tenant' },
+      { email: 'rahul.tenant@email.com', name: 'Rahul Singh', phone: '9876543214', role: 'tenant' },
+      { email: 'sneha.tenant@email.com', name: 'Sneha Reddy', phone: '9876543215', role: 'tenant' },
+      { email: 'vikram.tenant@email.com', name: 'Vikram Malhotra', phone: '9876543216', role: 'tenant' },
+      { email: 'pooja.tenant@email.com', name: 'Pooja Verma', phone: '9876543217', role: 'tenant' },
     ];
 
     for (const user of users) {
@@ -52,119 +52,119 @@ async function seedDatabase() {
     console.log('🏠 Creating properties...');
 
     const properties = [
-      // John Smith's properties (owner 1)
+      // Rajesh Kumar's properties (owner 1)
       {
         owner_id: owners[0]?.id,
-        title: 'Modern Downtown Apartment',
-        description: 'Beautiful modern apartment in the heart of downtown. Features floor-to-ceiling windows with stunning city views, hardwood floors, and a gourmet kitchen with stainless steel appliances. Walking distance to restaurants, shops, and public transit.',
-        rent: 2500.00,
-        location: '123 Main Street, Downtown, New York, NY 10001',
-        amenities: JSON.stringify(['WiFi', 'Gym', 'Parking', 'Doorman', 'Laundry', 'Air Conditioning']),
+        title: 'Luxury Apartment in Bandra West',
+        description: 'Spacious 3BHK apartment in the heart of Bandra. Features sea view balconies, marble flooring, and modular kitchen. Close to Linking Road and Bandstand.',
+        rent: 75000.00,
+        location: 'Hill Road, Bandra West, Mumbai, Maharashtra 400050',
+        amenities: JSON.stringify(['WiFi', 'Gym', 'Parking', 'Security', 'Power Backup', 'Air Conditioning']),
         photos: JSON.stringify(['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800', 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800']),
-        bedrooms: 2,
-        bathrooms: 2,
+        bedrooms: 3,
+        bathrooms: 3,
+        area_sqft: 1800,
+        property_type: 'apartment',
+        is_available: true
+      },
+      {
+        owner_id: owners[0]?.id,
+        title: 'Cozy Studio in Koramangala',
+        description: 'Charming studio apartment near startup hub. Perfect for young professionals. Walking distance to 100ft Road restaurants and cafes. Includes high-speed internet.',
+        rent: 25000.00,
+        location: '4th Block, Koramangala, Bangalore, Karnataka 560034',
+        amenities: JSON.stringify(['WiFi', 'Laundry', 'Air Conditioning', 'Geyser']),
+        photos: JSON.stringify(['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800']),
+        bedrooms: 1,
+        bathrooms: 1,
+        area_sqft: 500,
+        property_type: 'studio',
+        is_available: true
+      },
+      // Priya Sharma's properties (owner 2)
+      {
+        owner_id: owners[1]?.id,
+        title: 'Spacious Villa in Jubilee Hills',
+        description: 'Premium 4-bedroom independent villa with a private garden. Features servant quarters, 2 covered car parks, and terrace garden. Located in a prime residential area.',
+        rent: 145000.00,
+        location: 'Road No. 45, Jubilee Hills, Hyderabad, Telangana 500033',
+        amenities: JSON.stringify(['Garden', 'Garage', 'Servant Quarter', 'Vastu Compliant', 'Central AC', 'Security']),
+        photos: JSON.stringify(['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800']),
+        bedrooms: 4,
+        bathrooms: 4,
+        area_sqft: 3500,
+        property_type: 'villa',
+        is_available: true
+      },
+      {
+        owner_id: owners[1]?.id,
+        title: 'Sea Facing Flat in Besant Nagar',
+        description: 'Stunning 3BHK flat with direct Elliot\'s Beach view. Airy and well-ventilated. Walking distance to the beach and temples. Quiet neighborhood.',
+        rent: 45000.00,
+        location: '2nd Avenue, Besant Nagar, Chennai, Tamil Nadu 600090',
+        amenities: JSON.stringify(['Sea View', 'Lift', 'Security', 'Balcony', 'Power Backup']),
+        photos: JSON.stringify(['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800']),
+        bedrooms: 3,
+        bathrooms: 3,
+        area_sqft: 1600,
+        property_type: 'apartment',
+        is_available: true
+      },
+      // Amit Patel's properties (owner 3)
+      {
+        owner_id: owners[2]?.id,
+        title: 'Luxury Farmhouse in Chattarpur',
+        description: 'Magnificent farmhouse on 1 acre land. Features private swimming pool, landscaped lawns, and party hall. Ideal for luxury living away from city noise.',
+        rent: 250000.00,
+        location: 'Chattarpur Farms, New Delhi, Delhi 110074',
+        amenities: JSON.stringify(['Private Pool', 'Lawn', 'Security', 'Driver Room', 'Modular Kitchen', 'Farm View']),
+        photos: JSON.stringify(['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800', 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800']),
+        bedrooms: 5,
+        bathrooms: 5,
+        area_sqft: 6000,
+        property_type: 'house',
+        is_available: true
+      },
+      {
+        owner_id: owners[2]?.id,
+        title: 'Modern Loft in Hauz Khas Village',
+        description: 'Artist\'s delight! Contemporary loft overlooking the lake and deer park. Surrounded by art galleries, boutiques, and cafes. Unique interior design.',
+        rent: 65000.00,
+        location: 'Hauz Khas Village, New Delhi, Delhi 110016',
+        amenities: JSON.stringify(['Lake View', 'Wooden Flooring', 'Terrace', 'Pet Friendly', 'Fully Furnished']),
+        photos: JSON.stringify(['https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=800']),
+        bedrooms: 1,
+        bathrooms: 1,
         area_sqft: 1200,
         property_type: 'apartment',
         is_available: true
       },
       {
         owner_id: owners[0]?.id,
-        title: 'Cozy Studio Near Central Park',
-        description: 'Charming studio apartment just steps away from Central Park. Perfect for young professionals. Features updated kitchen, large windows, and built-in storage. Laundry in building.',
-        rent: 1800.00,
-        location: '456 Park Avenue, Upper East Side, New York, NY 10022',
-        amenities: JSON.stringify(['WiFi', 'Laundry', 'Air Conditioning', 'Heating']),
-        photos: JSON.stringify(['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800']),
-        bedrooms: 0,
-        bathrooms: 1,
-        area_sqft: 500,
-        property_type: 'studio',
-        is_available: true
-      },
-      // Sarah Johnson's properties (owner 2)
-      {
-        owner_id: owners[1]?.id,
-        title: 'Spacious Family House with Garden',
-        description: 'Beautiful 4-bedroom family home with a large backyard garden. Features updated kitchen, finished basement, attached 2-car garage, and excellent school district. Perfect for families!',
-        rent: 3500.00,
-        location: '789 Oak Lane, Brooklyn, NY 11201',
-        amenities: JSON.stringify(['Garden', 'Garage', 'Basement', 'Fireplace', 'Central Heating', 'Dishwasher']),
-        photos: JSON.stringify(['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800']),
-        bedrooms: 4,
-        bathrooms: 3,
-        area_sqft: 2800,
-        property_type: 'house',
-        is_available: true
-      },
-      {
-        owner_id: owners[1]?.id,
-        title: 'Luxury Condo with Ocean View',
-        description: 'Stunning luxury condo with panoramic ocean views. Features high-end finishes, chef\'s kitchen, spa-like bathrooms, and private balcony. Building amenities include pool, gym, and concierge.',
-        rent: 4500.00,
-        location: '321 Beach Boulevard, Miami Beach, FL 33139',
-        amenities: JSON.stringify(['Pool', 'Gym', 'Concierge', 'Balcony', 'Ocean View', 'Valet Parking']),
-        photos: JSON.stringify(['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800']),
-        bedrooms: 3,
-        bathrooms: 2,
-        area_sqft: 1800,
-        property_type: 'condo',
-        is_available: true
-      },
-      // Mike Williams' properties (owner 3)
-      {
-        owner_id: owners[2]?.id,
-        title: 'Elegant Villa with Pool',
-        description: 'Magnificent Mediterranean-style villa featuring a private pool, outdoor kitchen, and lush landscaping. Interior includes marble floors, vaulted ceilings, and a home theater. Gated community with 24/7 security.',
-        rent: 8000.00,
-        location: '555 Palm Drive, Beverly Hills, CA 90210',
-        amenities: JSON.stringify(['Private Pool', 'Home Theater', 'Security', 'Wine Cellar', 'Smart Home', 'Tennis Court']),
-        photos: JSON.stringify(['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800', 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800']),
-        bedrooms: 5,
-        bathrooms: 4,
-        area_sqft: 5000,
-        property_type: 'villa',
-        is_available: true
-      },
-      {
-        owner_id: owners[2]?.id,
-        title: 'Trendy Loft in Arts District',
-        description: 'Industrial-chic loft in the heart of the Arts District. Features exposed brick, soaring ceilings, original hardwood floors, and oversized windows. Open floor plan perfect for entertaining.',
-        rent: 2800.00,
-        location: '888 Artist Way, Los Angeles, CA 90013',
-        amenities: JSON.stringify(['High Ceilings', 'Exposed Brick', 'Rooftop Access', 'Pet Friendly', 'Bike Storage']),
-        photos: JSON.stringify(['https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=800']),
-        bedrooms: 1,
-        bathrooms: 1,
-        area_sqft: 1100,
-        property_type: 'apartment',
-        is_available: true
-      },
-      {
-        owner_id: owners[0]?.id,
-        title: 'Charming Brownstone Apartment',
-        description: 'Classic brownstone charm with modern updates. Features original moldings, decorative fireplace, updated kitchen and bath. Tree-lined street in historic neighborhood.',
-        rent: 2200.00,
-        location: '42 Maple Street, Boston, MA 02116',
-        amenities: JSON.stringify(['Fireplace', 'Garden Access', 'Laundry', 'Storage', 'Pet Friendly']),
+        title: 'Heritage Home in Fort Kochi',
+        description: 'Restored colonial-style house with Portuguese architecture. Features high ceilings, veranda, and courtyard. Located in the heart of historical Fort Kochi.',
+        rent: 32000.00,
+        location: 'Princess Street, Fort Kochi, Kochi, Kerala 682001',
+        amenities: JSON.stringify(['Courtyard', 'Veranda', 'Antique Furniture', 'WiFi', 'Garden']),
         photos: JSON.stringify(['https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800']),
         bedrooms: 2,
-        bathrooms: 1,
-        area_sqft: 950,
-        property_type: 'apartment',
+        bathrooms: 2,
+        area_sqft: 1400,
+        property_type: 'house',
         is_available: false
       },
       {
         owner_id: owners[1]?.id,
-        title: 'Modern Suburban Home',
-        description: 'Contemporary home in quiet suburban neighborhood. Open concept living, gourmet kitchen, master suite with walk-in closet. Large backyard with patio. Excellent schools nearby.',
-        rent: 2900.00,
-        location: '156 Willow Creek Dr, Austin, TX 78701',
-        amenities: JSON.stringify(['Garage', 'Backyard', 'Central AC', 'Dishwasher', 'Washer/Dryer']),
+        title: 'High-Rise Condo in Hi-Tech City',
+        description: 'Premium flat in gated community. Club house access with swimming pool, gym, and tennis court. Close to IT parks and international schools.',
+        rent: 55000.00,
+        location: 'Hitec City, Hyderabad, Telangana 500081',
+        amenities: JSON.stringify(['Club House', 'Swimming Pool', 'Gym', 'Tennis Court', 'Children Play Area', '24x7 Security']),
         photos: JSON.stringify(['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800']),
         bedrooms: 3,
-        bathrooms: 2,
-        area_sqft: 2000,
-        property_type: 'house',
+        bathrooms: 3,
+        area_sqft: 2100,
+        property_type: 'apartment',
         is_available: true
       },
     ];
@@ -174,9 +174,9 @@ async function seedDatabase() {
         await connection.query(
           `INSERT INTO properties (owner_id, title, description, rent, location, amenities, photos, bedrooms, bathrooms, area_sqft, property_type, is_available) 
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [property.owner_id, property.title, property.description, property.rent, property.location, 
-           property.amenities, property.photos, property.bedrooms, property.bathrooms, 
-           property.area_sqft, property.property_type, property.is_available]
+          [property.owner_id, property.title, property.description, property.rent, property.location,
+          property.amenities, property.photos, property.bedrooms, property.bathrooms,
+          property.area_sqft, property.property_type, property.is_available]
         );
       }
     }
@@ -198,25 +198,25 @@ async function seedDatabase() {
         property_id: propertyList[0]?.id,
         tenant_id: tenants[0]?.id,
         status: 'Approved',
-        message: 'I am very interested in this apartment. I work nearby and have excellent references from my previous landlord.',
+        message: 'Namaste! I am working at BKC and this Bandra flat is perfect for my commute. I have a steady income and can provide bank statements.',
         move_in_date: '2025-02-01',
         duration_months: 12,
-        owner_notes: 'Great tenant, references checked out. Welcome aboard!'
+        owner_notes: 'Documents verified. Welcome to Mumbai!'
       },
       {
         property_id: propertyList[1]?.id,
         tenant_id: tenants[1]?.id,
         status: 'Pending',
-        message: 'This studio looks perfect for my needs. I am a quiet professional looking for a long-term rental.',
+        message: 'Hi, I am a software engineer working in Koramangala. The studio is very close to my office. Looking for a long term stay.',
         move_in_date: '2025-01-15',
-        duration_months: 6,
+        duration_months: 11,
         owner_notes: null
       },
       {
         property_id: propertyList[2]?.id,
         tenant_id: tenants[2]?.id,
         status: 'Pending',
-        message: 'We are a family of 4 looking for a nice home in a good school district. This property seems ideal!',
+        message: 'We are moving to Hyderabad next month. Your villa in Jubilee Hills looks beautiful.',
         move_in_date: '2025-03-01',
         duration_months: 24,
         owner_notes: null
@@ -225,36 +225,36 @@ async function seedDatabase() {
         property_id: propertyList[3]?.id,
         tenant_id: tenants[3]?.id,
         status: 'Rejected',
-        message: 'Interested in the ocean view condo for a 6-month lease.',
+        message: 'Interested in the sea view flat for a short duration of 2 months.',
         move_in_date: '2025-01-01',
-        duration_months: 6,
-        owner_notes: 'Sorry, we require a minimum 12-month lease.'
+        duration_months: 2,
+        owner_notes: 'Sorry, we only rent for minimum 11 months.'
       },
       {
         property_id: propertyList[4]?.id,
         tenant_id: tenants[4]?.id,
         status: 'Approved',
-        message: 'This villa is exactly what we have been looking for. Ready to move in immediately with first and last month deposit.',
+        message: 'The farmhouse is perfect for our joint family requirements. Ready to pay advance immediately.',
         move_in_date: '2025-01-20',
         duration_months: 12,
-        owner_notes: 'Deposit received. Keys will be ready on move-in date.'
+        owner_notes: 'Advance received. Agreement preparation in progress.'
       },
       {
         property_id: propertyList[0]?.id,
         tenant_id: tenants[2]?.id,
         status: 'Pending',
-        message: 'I am relocating for work and this location is perfect. Can we schedule a viewing?',
+        message: 'Is the apartment still available? I am looking for a place near Bandstand.',
         move_in_date: '2025-02-15',
-        duration_months: 12,
+        duration_months: 11,
         owner_notes: null
       },
       {
         property_id: propertyList[5]?.id,
         tenant_id: tenants[0]?.id,
         status: 'Pending',
-        message: 'Love the industrial style! Is the loft pet-friendly? I have a small dog.',
+        message: 'Love the location in Hauz Khas! Is it available for immediate move-in?',
         move_in_date: '2025-02-01',
-        duration_months: 12,
+        duration_months: 11,
         owner_notes: null
       },
     ];
@@ -264,9 +264,9 @@ async function seedDatabase() {
         await connection.query(
           `INSERT INTO bookings (property_id, tenant_id, status, message, move_in_date, duration_months, owner_notes, response_time) 
            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-          [booking.property_id, booking.tenant_id, booking.status, booking.message, 
-           booking.move_in_date, booking.duration_months, booking.owner_notes,
-           booking.status !== 'Pending' ? new Date() : null]
+          [booking.property_id, booking.tenant_id, booking.status, booking.message,
+          booking.move_in_date, booking.duration_months, booking.owner_notes,
+          booking.status !== 'Pending' ? new Date() : null]
         );
       }
     }
@@ -276,24 +276,24 @@ async function seedDatabase() {
     console.log('\n========================================');
     console.log('🎉 Database seeding completed successfully!');
     console.log('========================================\n');
-    
+
     console.log('📊 Data Summary:');
     console.log('   • 3 Property Owners');
     console.log('   • 5 Tenants');
     console.log('   • 8 Properties');
     console.log('   • 7 Booking Requests\n');
-    
+
     console.log('🔐 Login Credentials (password: password123):');
     console.log('   Owners:');
-    console.log('   • john.owner@email.com');
-    console.log('   • sarah.owner@email.com');
-    console.log('   • mike.owner@email.com');
+    console.log('   • rajesh.owner@email.com');
+    console.log('   • priya.owner@email.com');
+    console.log('   • amit.owner@email.com');
     console.log('   Tenants:');
-    console.log('   • alice.tenant@email.com');
-    console.log('   • bob.tenant@email.com');
-    console.log('   • carol.tenant@email.com');
-    console.log('   • david.tenant@email.com');
-    console.log('   • emma.tenant@email.com');
+    console.log('   • anjali.tenant@email.com');
+    console.log('   • rahul.tenant@email.com');
+    console.log('   • sneha.tenant@email.com');
+    console.log('   • vikram.tenant@email.com');
+    console.log('   • pooja.tenant@email.com');
     console.log('   Admin:');
     console.log('   • admin@houserental.com (password: admin123)\n');
 

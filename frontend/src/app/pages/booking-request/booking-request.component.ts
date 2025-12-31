@@ -43,7 +43,7 @@ import { Property } from '../../core/models';
                     {{ property()!.location }}
                   </p>
                   <div class="price">
-                    <span class="amount">\${{ property()!.rent | number }}</span>
+                    <span class="amount">₹{{ property()!.rent | number }}</span>
                     <span class="period">/month</span>
                   </div>
                 </div>
@@ -102,7 +102,7 @@ import { Property } from '../../core/models';
                   <h4>Booking Summary</h4>
                   <div class="summary-row">
                     <span>Monthly Rent</span>
-                    <span>\${{ property()!.rent | number }}</span>
+                    <span>₹{{ property()!.rent | number }}</span>
                   </div>
                   <div class="summary-row">
                     <span>Duration</span>
@@ -110,7 +110,7 @@ import { Property } from '../../core/models';
                   </div>
                   <div class="summary-row total">
                     <span>Estimated Total</span>
-                    <span>\${{ (property()!.rent * bookingData.duration_months) | number }}</span>
+                    <span>₹{{ (property()!.rent * bookingData.duration_months) | number }}</span>
                   </div>
                 </div>
 

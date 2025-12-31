@@ -307,18 +307,18 @@ After running `npm run db:seed`, you can use these accounts:
 ### Owner Accounts
 | Email | Password |
 |-------|----------|
-| `john.owner@email.com` | `password123` |
-| `sarah.owner@email.com` | `password123` |
-| `mike.owner@email.com` | `password123` |
+| `rajesh.owner@email.com` | `password123` |
+| `priya.owner@email.com` | `password123` |
+| `amit.owner@email.com` | `password123` |
 
 ### Tenant Accounts
 | Email | Password |
 |-------|----------|
-| `alice.tenant@email.com` | `password123` |
-| `bob.tenant@email.com` | `password123` |
-| `carol.tenant@email.com` | `password123` |
-| `david.tenant@email.com` | `password123` |
-| `emma.tenant@email.com` | `password123` |
+| `anjali.tenant@email.com` | `password123` |
+| `rahul.tenant@email.com` | `password123` |
+| `sneha.tenant@email.com` | `password123` |
+| `vikram.tenant@email.com` | `password123` |
+| `pooja.tenant@email.com` | `password123` |
 
 ---
 

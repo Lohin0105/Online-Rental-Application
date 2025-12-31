@@ -98,7 +98,7 @@ import { interval, Subscription, startWith, switchMap } from 'rxjs';
                         <span class="material-icons-outlined">location_on</span>
                         {{ booking.property_location }}
                       </p>
-                      <p class="rent">\${{ booking.property_rent | number }}/month</p>
+                      <p class="rent">₹{{ booking.property_rent | number }}/month</p>
                     </div>
                   </div>
 
@@ -221,7 +221,7 @@ import { interval, Subscription, startWith, switchMap } from 'rxjs';
                 </div>
                  <div class="info-item">
                   <label>Rent</label>
-                  <p>\${{ selectedBooking()?.property_rent }}/mo</p>
+                  <p>₹{{ selectedBooking()?.property_rent }}/mo</p>
                 </div>
               </div>
               

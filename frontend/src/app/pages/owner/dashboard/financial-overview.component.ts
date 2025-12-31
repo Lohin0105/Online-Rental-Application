@@ -19,7 +19,7 @@ import { FinancialAnalytics } from '../../../core/models';
             <span class="material-icons-outlined">trending_up</span>
           </div>
           <div class="metric-content">
-            <span class="metric-value">\${{ financialData()?.totalRevenue?.toLocaleString() || 0 }}</span>
+            <span class="metric-value">₹{{ financialData()?.totalRevenue?.toLocaleString() || 0 }}</span>
             <span class="metric-label">Total Revenue</span>
           </div>
         </div>
@@ -29,7 +29,7 @@ import { FinancialAnalytics } from '../../../core/models';
             <span class="material-icons-outlined">calendar_month</span>
           </div>
           <div class="metric-content">
-            <span class="metric-value">\${{ financialData()?.monthlyRevenue?.toLocaleString() || 0 }}</span>
+            <span class="metric-value">₹{{ financialData()?.monthlyRevenue?.toLocaleString() || 0 }}</span>
             <span class="metric-label">This Month</span>
           </div>
         </div>
@@ -39,7 +39,7 @@ import { FinancialAnalytics } from '../../../core/models';
             <span class="material-icons-outlined">schedule</span>
           </div>
           <div class="metric-content">
-            <span class="metric-value">\${{ financialData()?.pendingPayments?.toLocaleString() || 0 }}</span>
+            <span class="metric-value">₹{{ financialData()?.pendingPayments?.toLocaleString() || 0 }}</span>
             <span class="metric-label">Pending Payments</span>
           </div>
         </div>
@@ -65,7 +65,7 @@ import { FinancialAnalytics } from '../../../core/models';
               <div
                 class="chart-bar"
                 [style.height.%]="getBarHeight(month.revenue)"
-                [title]="'Revenue: $' + month.revenue + ', Expenses: $' + month.expenses"
+                [title]="'Revenue: ₹' + month.revenue + ', Expenses: ₹' + month.expenses"
                 >
                 <div class="revenue-bar" [style.height.%]="getRevenuePercentage(month)"></div>
                 <div class="expenses-bar" [style.height.%]="getExpensesPercentage(month)"></div>
@@ -91,7 +91,7 @@ import { FinancialAnalytics } from '../../../core/models';
               >
               <div class="property-info">
                 <span class="property-title">{{ property.title }}</span>
-                <span class="property-revenue">\${{ property.revenue.toLocaleString() }}</span>
+                <span class="property-revenue">₹{{ property.revenue.toLocaleString() }}</span>
               </div>
               <div class="property-metrics">
                 <span class="occupancy">{{ property.occupancyRate }}% occupied</span>

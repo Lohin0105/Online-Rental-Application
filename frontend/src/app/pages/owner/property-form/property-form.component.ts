@@ -7,9 +7,9 @@ import { NotificationService } from '../../../core/services/notification.service
 import { Property } from '../../../core/models';
 
 @Component({
-    selector: 'app-property-form',
-    imports: [FormsModule, RouterLink],
-    template: `
+  selector: 'app-property-form',
+  imports: [FormsModule, RouterLink],
+  template: `
     <div class="property-form-page">
       <div class="container">
         <a routerLink="/owner/dashboard" class="back-link animate-fade-in">
@@ -62,7 +62,7 @@ import { Property } from '../../../core/models';
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Monthly Rent ($) *</label>
+                  <label class="form-label">Monthly Rent (₹) *</label>
                   <input 
                     type="number" 
                     class="form-input"
@@ -85,7 +85,7 @@ import { Property } from '../../../core/models';
                 <input 
                   type="text" 
                   class="form-input"
-                  placeholder="123 Main Street, City, State 12345"
+                  placeholder="e.g., 123 MG Road, Indiranagar, Bangalore 560038"
                   [(ngModel)]="formData.location"
                   name="location"
                   required
@@ -218,7 +218,7 @@ import { Property } from '../../../core/models';
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     .property-form-page {
       min-height: 100vh;
       padding: var(--space-2xl) 0;
@@ -494,7 +494,7 @@ export class PropertyFormComponent implements OnInit {
     private router: Router,
     private propertyService: PropertyService,
     private notification: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -507,7 +507,7 @@ export class PropertyFormComponent implements OnInit {
 
   loadProperty() {
     if (!this.propertyId) return;
-    
+
     this.propertyService.getPropertyById(this.propertyId).subscribe({
       next: (response) => {
         if (response.success && response.data) {

@@ -107,7 +107,7 @@ import { interval, Subscription, startWith, switchMap, forkJoin } from 'rxjs';
                       <h3>{{ property.title }}</h3>
                       <p class="location">{{ property.location }}</p>
                       <div class="property-meta">
-                        <span class="price">\${{ property.rent }}/mo</span>
+                        <span class="price">₹{{ property.rent }}/mo</span>
                         @if (property.pending_requests) {
                           <span class="badge pending">{{ property.pending_requests }} pending</span>
                         }
