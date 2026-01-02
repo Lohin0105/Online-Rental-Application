@@ -2,7 +2,7 @@
 
 A modern, AI-powered rental platform connecting property owners with tenants. Built with Angular 21, Node.js/Express, and integrated with Google Gemini AI for intelligent features.
 
-![Haven Platform](https://img.shields.io/badge/Angular-18-red?logo=angular)
+![Haven Platform](https://img.shields.io/badge/Angular-21-red?logo=angular)
 ![Node.js](https://img.shields.io/badge/Node.js-20.17-green?logo=node.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue?logo=typescript)
 ![AI Powered](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-purple)
@@ -52,7 +52,7 @@ Before you begin, ensure you have the following installed:
 - Node.js: v20.17.0 or higher ([Download](https://nodejs.org/))
 - npm: v10.x or higher (comes with Node.js)
 - MySQL: v8.0 or higher ([Download](https://dev.mysql.com/downloads/mysql/))
-- Angular CLI: v18.x (installed globally)
+- Angular CLI: v21.x (installed globally)
 - Gemini API Key: Get one from [Google AI Studio](https://aistudio.google.com/app/apikey)
 
 ### Check Your Installations
@@ -73,7 +73,7 @@ cd path/to/your/projects
 
 ### Step 2: Install Angular CLI Globally
 ```bash
-npm install -g @angular/cli@18
+npm install -g @angular/cli@21
 ```
 
 ### Step 3: Install Dependencies
@@ -274,7 +274,7 @@ server.ts # Express server entry
 .env # Environment variables (create this)
 package.json
 
-frontend/ # Angular 18 Frontend
+frontend/ # Angular 21 Frontend
 src/
 app/
 core/
@@ -609,7 +609,7 @@ A: Backend can be deployed to Heroku, Railway, or any Node.js hosting. Frontend 
 
 ## Key Technologies
 
-- Frontend: Angular 18, TypeScript, SCSS, Material Icons
+- Frontend: Angular 21, TypeScript, SCSS, Material Icons
 - Backend: Node.js 20, Express.js, TypeScript
 - Database: MySQL 8.0
 - AI: Google Gemini 2.5 Flash
