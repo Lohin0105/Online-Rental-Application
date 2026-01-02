@@ -1,6 +1,6 @@
 # Haven - House Rental & Tenant Management System
 
-A modern, AI-powered rental platform connecting property owners with tenants. Built with Angular 18, Node.js/Express, and integrated with Google Gemini AI for intelligent features.
+A modern, AI-powered rental platform connecting property owners with tenants. Built with Angular 21, Node.js/Express, and integrated with Google Gemini AI for intelligent features.
 
 ![Haven Platform](https://img.shields.io/badge/Angular-18-red?logo=angular)
 ![Node.js](https://img.shields.io/badge/Node.js-20.17-green?logo=node.js)
