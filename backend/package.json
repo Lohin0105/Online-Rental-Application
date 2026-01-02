@@ -1,0 +1,48 @@
+{
+  "name": "house-rental-backend",
+  "version": "1.0.0",
+  "description": "Online House Rental & Tenant Management System Backend with AI Chatbot",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "db:init": "ts-node src/config/init-db.ts",
+    "db:seed": "ts-node src/config/seed-db.ts",
+    "test-email": "ts-node src/scripts/test-email.ts"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.6.5",
+    "nodemailer": "^7.0.12"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^20.10.4",
+    "@types/nodemailer": "^7.0.4",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  },
+  "chatbot": {
+    "description": "RentAssist AI Chatbot powered by OpenRouter API",
+    "dependencies": {
+      "axios": "HTTP client for OpenRouter API communication",
+      "dotenv": "Environment variable management for API keys"
+    },
+    "requiredEnvVars": [
+      "OPENROUTER_API_KEY"
+    ]
+  }
+}
