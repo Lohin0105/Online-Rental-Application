@@ -111,7 +111,8 @@ export const getAllProperties = async (req: Request, res: Response): Promise<voi
     console.error('Get properties error:', error);
     res.status(500).json({
       success: false,
-      message: 'An error occurred while fetching properties'
+      message: 'An error occurred while fetching properties',
+      errors: [{ message: error instanceof Error ? error.message : String(error) }]
     });
   }
 };

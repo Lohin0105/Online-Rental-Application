@@ -1,17 +1,15 @@
 import { Router } from 'express';
-import { demoLogin, demoRegister, demoProfile } from '../controllers/authController.demo';
+import { register, login, getProfile, updateProfile } from '../controllers/authController';
 import { loginValidation } from '../middleware/validation';
 import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
-// DEMO MODE - Using hardcoded accounts
-router.post('/register', demoRegister);
-router.post('/login', loginValidation, demoLogin);
-router.get('/profile', authenticateToken, demoProfile);
-router.put('/profile', authenticateToken, (req, res) => {
-  res.status(400).json({ success: false, message: 'Profile updates disabled in demo mode' });
-});
+// PRODUCTION MODE - Using database with real authentication
+router.post('/register', register);
+router.post('/login', loginValidation, login);
+router.get('/profile', authenticateToken, getProfile);
+router.put('/profile', authenticateToken, updateProfile);
 
 export default router;
 

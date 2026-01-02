@@ -1,52 +1,32 @@
 import { Router } from 'express';
 import { authenticateToken, authorizeRoles } from '../middleware/auth';
+import {
+  createBooking,
+  getTenantBookings,
+  getOwnerBookings,
+  updateBookingStatus,
+  cancelBooking,
+  getBookingStats
+} from '../controllers/bookingController';
 
 const router = Router();
 
-// DEMO MODE - Mock responses
-router.post('/', authenticateToken, authorizeRoles('tenant'), (req, res) => {
-  res.status(400).json({
-    success: false,
-    message: 'Demo mode - Cannot create bookings. Database required.'
-  });
-});
+// Create a new booking request (Tenant only)
+router.post('/', authenticateToken, authorizeRoles('tenant'), createBooking);
 
-router.get('/my-bookings', authenticateToken, authorizeRoles('tenant'), (req, res) => {
-  res.json({
-    success: true,
-    data: [],
-    message: 'Demo mode - No bookings'
-  });
-});
+// Get tenant's own bookings
+router.get('/my-bookings', authenticateToken, authorizeRoles('tenant'), getTenantBookings);
 
-router.delete('/:id', authenticateToken, authorizeRoles('tenant'), (req, res) => {
-  res.status(400).json({
-    success: false,
-    message: 'Demo mode - Cannot delete bookings'
-  });
-});
+// Cancel a booking (Tenant only - can only cancel own pending bookings)
+router.delete('/:id', authenticateToken, authorizeRoles('tenant'), cancelBooking);
 
-router.get('/requests', authenticateToken, authorizeRoles('owner', 'admin'), (req, res) => {
-  res.json({
-    success: true,
-    data: [],
-    message: 'Demo mode - No booking requests'
-  });
-});
+// Get booking requests for owner's properties (Owner/Admin)
+router.get('/requests', authenticateToken, authorizeRoles('owner', 'admin'), getOwnerBookings);
 
-router.get('/stats', authenticateToken, authorizeRoles('owner', 'admin'), (req, res) => {
-  res.json({
-    success: true,
-    data: { total: 0, pending: 0, approved: 0, rejected: 0 }
-  });
-});
+// Get booking stats (Owner/Admin)
+router.get('/stats', authenticateToken, authorizeRoles('owner', 'admin'), getBookingStats);
 
-router.patch('/:id/status', authenticateToken, authorizeRoles('owner', 'admin'), (req, res) => {
-  res.status(400).json({
-    success: false,
-    message: 'Demo mode - Cannot update bookings'
-  });
-});
+// Update booking status - approve/reject (Owner/Admin)
+router.patch('/:id/status', authenticateToken, authorizeRoles('owner', 'admin'), updateBookingStatus);
 
 export default router;
-

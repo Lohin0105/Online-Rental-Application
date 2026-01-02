@@ -88,7 +88,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         if (confirm('Are you sure you want to delete this user?')) {
             this.adminService.deleteUser(userId).subscribe({
                 next: () => {
-                    alert('User deleted successfully (Demo Mode)');
+                    alert('User deleted successfully');
                     this.manualRefresh();
                 },
                 error: (err) => {
@@ -102,7 +102,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         if (confirm('Are you sure you want to delete this property?')) {
             this.adminService.deleteProperty(propertyId).subscribe({
                 next: () => {
-                    alert('Property deleted successfully (Demo Mode)');
+                    alert('Property deleted successfully');
                     this.manualRefresh();
                 },
                 error: (err) => {
