@@ -8,7 +8,7 @@ async function seedDatabase() {
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || 'Modanker_04',
+    password: process.env.DB_PASSWORD || 'sreevastha',
     database: process.env.DB_NAME || 'house_rental_db',
     port: parseInt(process.env.DB_PORT || '3306')
   });
@@ -43,11 +43,13 @@ async function seedDatabase() {
 
     const users = [
       // Owners
-      { email: 'rajesh.sharma@email.com', name: 'Rajesh Sharma', phone: '+91 98111 22333', role: 'owner' },
+      { email: 'srivathsathotamsetty@gmail.com', name: 'Srivathsa Owner', phone: '+91 98111 22333', role: 'owner' },
+      { email: 'rajesh.sharma@email.com', name: 'Rajesh Sharma', phone: '+91 98111 22334', role: 'owner' },
       { email: 'priya.patel@email.com', name: 'Priya Patel', phone: '+91 99222 33444', role: 'owner' },
       { email: 'vikram.malhotra@email.com', name: 'Vikram Malhotra', phone: '+91 97333 44555', role: 'owner' },
       { email: 'anita.reddy@email.com', name: 'Anita Reddy', phone: '+91 96444 55666', role: 'owner' },
       // Tenants
+      { email: 'sreevastha7@gmail.com', name: 'Sreevastha Tenant', phone: '+91 95555 66776', role: 'tenant' },
       { email: 'amit.kumar@email.com', name: 'Amit Kumar', phone: '+91 95555 66777', role: 'tenant' },
       { email: 'sneha.gupta@email.com', name: 'Sneha Gupta', phone: '+91 94666 77888', role: 'tenant' },
       { email: 'rohit.singh@email.com', name: 'Rohit Singh', phone: '+91 93777 88999', role: 'tenant' },
@@ -395,8 +397,8 @@ async function seedDatabase() {
     
     console.log('📊 Data Summary:');
     console.log('   • 1 Admin');
-    console.log('   • 4 Property Owners');
-    console.log('   • 6 Tenants');
+    console.log('   • 5 Property Owners (including srivathsathotamsetty@gmail.com)');
+    console.log('   • 7 Tenants (including sreevastha7@gmail.com)');
     console.log('   • 12 Properties across Mumbai, Bangalore, Delhi NCR, Hyderabad & Chennai');
     console.log('   • 8 Booking Requests\n');
     
@@ -408,12 +410,14 @@ async function seedDatabase() {
     console.log('   │   admin@houserental.com         (password: admin123)│');
     console.log('   ├─────────────────────────────────────────────────────┤');
     console.log('   │ OWNERS (password: password123)                      │');
+    console.log('   │   srivathsathotamsetty@gmail.com (Primary Owner)    │');
     console.log('   │   rajesh.sharma@email.com       (Mumbai)            │');
     console.log('   │   priya.patel@email.com         (Bangalore)         │');
     console.log('   │   vikram.malhotra@email.com     (Delhi NCR)         │');
     console.log('   │   anita.reddy@email.com         (Hyderabad/Chennai) │');
     console.log('   ├─────────────────────────────────────────────────────┤');
     console.log('   │ TENANTS (password: password123)                     │');
+    console.log('   │   sreevastha7@gmail.com         (Primary Tenant)    │');
     console.log('   │   amit.kumar@email.com                              │');
     console.log('   │   sneha.gupta@email.com                             │');
     console.log('   │   rohit.singh@email.com                             │');

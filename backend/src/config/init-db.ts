@@ -8,7 +8,7 @@ async function initializeDatabase() {
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || 'Modanker_04',
+    password: process.env.DB_PASSWORD || 'sreevastha',
     port: parseInt(process.env.DB_PORT || '3306')
   });
 
@@ -112,9 +112,25 @@ async function initializeDatabase() {
       VALUES ('admin@houserental.com', ?, 'System Admin', 'admin')
     `, [hashedPassword]);
 
+    // Create tenant user (sreevastha7@gmail.com)
+    const tenantPassword = await bcrypt.hash('tenant123', 10);
+    await connection.query(`
+      INSERT IGNORE INTO users (email, password, name, role, phone) 
+      VALUES ('sreevastha7@gmail.com', ?, 'Sreevastha Tenant', 'tenant', '+91-9876543210')
+    `, [tenantPassword]);
+
+    // Create owner user (srivathsathotamsetty@gmail.com)
+    const ownerPassword = await bcrypt.hash('owner123', 10);
+    await connection.query(`
+      INSERT IGNORE INTO users (email, password, name, role, phone) 
+      VALUES ('srivathsathotamsetty@gmail.com', ?, 'Srivathsa Owner', 'owner', '+91-9876543211')
+    `, [ownerPassword]);
+
     console.log('✅ Database initialized successfully!');
     console.log('📋 Tables created: users, properties, bookings, property_ratings, user_ratings');
     console.log('👤 Default admin user: admin@houserental.com / admin123');
+    console.log('👤 Tenant user: sreevastha7@gmail.com / tenant123');
+    console.log('👤 Owner user: srivathsathotamsetty@gmail.com / owner123');
 
   } catch (error) {
     console.error('❌ Error initializing database:', error);
@@ -125,4 +141,3 @@ async function initializeDatabase() {
 }
 
 initializeDatabase();
-

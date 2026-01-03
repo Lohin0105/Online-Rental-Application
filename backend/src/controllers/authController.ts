@@ -60,28 +60,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
-    // Demo credentials bypass
-    if (email === 'owner@demo.com' && password === 'demo123') {
-      const token = generateToken({ id: 999, email: 'owner@demo.com', role: 'owner' });
-
-      res.json({
-        success: true,
-        message: 'Login successful',
-        data: {
-          user: {
-            id: 999,
-            email: 'owner@demo.com',
-            name: 'Demo Owner',
-            role: 'owner',
-            phone: null,
-            avatar: null
-          },
-          token
-        }
-      });
-      return;
-    }
-
     // Find user
     const [users] = await pool.query<RowDataPacket[]>(
       'SELECT * FROM users WHERE email = ?',
@@ -137,24 +115,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 export const getProfile = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.user?.id;
-
-    // Demo user bypass
-    if (userId === 999) {
-      res.json({
-        success: true,
-        message: 'Profile retrieved successfully',
-        data: {
-          id: 999,
-          email: 'owner@demo.com',
-          name: 'Demo Owner',
-          phone: null,
-          role: 'owner',
-          avatar: null,
-          created_at: new Date().toISOString()
-        }
-      });
-      return;
-    }
 
     const [users] = await pool.query<RowDataPacket[]>(
       'SELECT id, email, name, phone, role, avatar, created_at FROM users WHERE id = ?',

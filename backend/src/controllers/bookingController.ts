@@ -1,66 +1,12 @@
 import { Response } from 'express';
 import pool from '../config/database';
-import { notifyOwnerPropertyRequest } from '../services/emailService';
+import { 
+  notifyOwnerPropertyRequest, 
+  notifyTenantBookingApproved, 
+  notifyTenantBookingRejected 
+} from '../services/emailService';
 import { AuthRequest } from '../types';
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
-
-// In-memory storage for demo bookings
-let demoBookings: any[] = [
-  {
-    id: 1,
-    property_id: 1,
-    tenant_id: 1001,
-    status: 'Pending',
-    message: 'I am a graduate student looking for a quiet place to study. The apartment looks perfect for my needs.',
-    move_in_date: '2024-02-01',
-    duration_months: 12,
-    request_time: '2024-01-20T14:30:00.000Z',
-    response_time: null,
-    owner_notes: null,
-    property_title: 'Modern Downtown Apartment',
-    property_location: 'Downtown, City Center',
-    property_rent: 2500,
-    tenant_name: 'Alice Johnson',
-    tenant_email: 'alice.tenant@email.com',
-    tenant_phone: '+1-555-0123'
-  },
-  {
-    id: 2,
-    property_id: 1,
-    tenant_id: 1002,
-    status: 'Pending',
-    message: 'Working professional seeking a modern apartment close to work. Love the amenities!',
-    move_in_date: '2024-02-15',
-    duration_months: 6,
-    request_time: '2024-01-18T09:15:00.000Z',
-    response_time: null,
-    owner_notes: null,
-    property_title: 'Modern Downtown Apartment',
-    property_location: 'Downtown, City Center',
-    property_rent: 2500,
-    tenant_name: 'Bob Smith',
-    tenant_email: 'bob.tenant@email.com',
-    tenant_phone: '+1-555-0456'
-  },
-  {
-    id: 3,
-    property_id: 3,
-    tenant_id: 1003,
-    status: 'Approved',
-    message: 'Family of 4 looking for a spacious home. The villa seems ideal for our needs.',
-    move_in_date: '2024-03-01',
-    duration_months: 24,
-    request_time: '2024-01-12T16:45:00.000Z',
-    response_time: '2024-01-13T10:20:00.000Z',
-    owner_notes: 'Great family, approved after background check.',
-    property_title: 'Luxury Villa with Garden',
-    property_location: 'Suburban Area',
-    property_rent: 4500,
-    tenant_name: 'Carol Davis',
-    tenant_email: 'carol.tenant@email.com',
-    tenant_phone: '+1-555-0789'
-  }
-];
 
 export const createBooking = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -170,7 +116,7 @@ export const getTenantBookings = async (req: AuthRequest, res: Response): Promis
 
     const [bookings] = await pool.query<RowDataPacket[]>(
       `SELECT b.*, p.title as property_title, p.location as property_location, 
-       p.rent as property_rent, p.photos as property_photos,
+       p.rent as property_rent, p.photos as property_photos, p.owner_id as owner_id,
        u.name as owner_name, u.email as owner_email, u.phone as owner_phone
        FROM bookings b
        JOIN properties p ON b.property_id = p.id
@@ -203,76 +149,9 @@ export const getOwnerBookings = async (req: AuthRequest, res: Response): Promise
   try {
     const ownerId = req.user?.id;
 
-    // Demo user bypass
-    if (ownerId === 999) {
-      const demoBookings = [
-        {
-          id: 1,
-          property_id: 1,
-          tenant_id: 1001,
-          status: 'Pending',
-          message: 'I am a graduate student looking for a quiet place to study. The apartment looks perfect for my needs.',
-          move_in_date: '2024-02-01',
-          duration_months: 12,
-          request_time: '2024-01-20T14:30:00.000Z',
-          response_time: null,
-          owner_notes: null,
-          property_title: 'Modern Downtown Apartment',
-          property_location: 'Downtown, City Center',
-          property_rent: 2500,
-          tenant_name: 'Alice Johnson',
-          tenant_email: 'alice.tenant@email.com',
-          tenant_phone: '+1-555-0123'
-        },
-        {
-          id: 2,
-          property_id: 1,
-          tenant_id: 1002,
-          status: 'Pending',
-          message: 'Working professional seeking a modern apartment close to work. Love the amenities!',
-          move_in_date: '2024-02-15',
-          duration_months: 6,
-          request_time: '2024-01-18T09:15:00.000Z',
-          response_time: null,
-          owner_notes: null,
-          property_title: 'Modern Downtown Apartment',
-          property_location: 'Downtown, City Center',
-          property_rent: 2500,
-          tenant_name: 'Bob Smith',
-          tenant_email: 'bob.tenant@email.com',
-          tenant_phone: '+1-555-0456'
-        },
-        {
-          id: 3,
-          property_id: 3,
-          tenant_id: 1003,
-          status: 'Approved',
-          message: 'Family of 4 looking for a spacious home. The villa seems ideal for our needs.',
-          move_in_date: '2024-03-01',
-          duration_months: 24,
-          request_time: '2024-01-12T16:45:00.000Z',
-          response_time: '2024-01-13T10:20:00.000Z',
-          owner_notes: 'Great family, approved after background check.',
-          property_title: 'Luxury Villa with Garden',
-          property_location: 'Suburban Area',
-          property_rent: 4500,
-          tenant_name: 'Carol Davis',
-          tenant_email: 'carol.tenant@email.com',
-          tenant_phone: '+1-555-0789'
-        }
-      ];
-
-      res.json({
-        success: true,
-        message: 'Booking requests retrieved successfully',
-        data: demoBookings
-      });
-      return;
-    }
-
     const [bookings] = await pool.query<RowDataPacket[]>(
       `SELECT b.*, p.title as property_title, p.location as property_location, p.rent as property_rent,
-       u.name as tenant_name, u.email as tenant_email, u.phone as tenant_phone
+       p.owner_id as owner_id, u.name as tenant_name, u.email as tenant_email, u.phone as tenant_phone
        FROM bookings b
        JOIN properties p ON b.property_id = p.id
        JOIN users u ON b.tenant_id = u.id
@@ -300,31 +179,6 @@ export const updateBookingStatus = async (req: AuthRequest, res: Response): Prom
     const { id } = req.params;
     const ownerId = req.user?.id;
     const { status, owner_notes } = req.body;
-
-    // Demo user bypass
-    if (ownerId === 999) {
-      const bookingIndex = demoBookings.findIndex(b => b.id === parseInt(id));
-
-      if (bookingIndex === -1) {
-        res.status(404).json({
-          success: false,
-          message: 'Booking not found'
-        });
-        return;
-      }
-
-      // Update the booking status
-      demoBookings[bookingIndex].status = status;
-      demoBookings[bookingIndex].owner_notes = owner_notes || null;
-      demoBookings[bookingIndex].response_time = new Date().toISOString();
-
-      res.json({
-        success: true,
-        message: `Booking ${status.toLowerCase()} successfully`,
-        data: demoBookings[bookingIndex]
-      });
-      return;
-    }
 
     // Verify ownership
     const [bookings] = await pool.query<RowDataPacket[]>(
@@ -357,18 +211,47 @@ export const updateBookingStatus = async (req: AuthRequest, res: Response): Prom
     );
 
     const [updatedBooking] = await pool.query<RowDataPacket[]>(
-      `SELECT b.*, p.title as property_title, u.name as tenant_name, u.email as tenant_email
+      `SELECT b.*, p.title as property_title, p.location as property_location, p.rent as property_rent,
+       u.name as tenant_name, u.email as tenant_email,
+       o.name as owner_name, o.email as owner_email
        FROM bookings b
        JOIN properties p ON b.property_id = p.id
        JOIN users u ON b.tenant_id = u.id
+       JOIN users o ON p.owner_id = o.id
        WHERE b.id = ?`,
       [id]
     );
 
+    const booking = updatedBooking[0];
+
+    // Send email notification to tenant based on status
+    if (booking.tenant_email) {
+      if (status === 'Approved') {
+        notifyTenantBookingApproved(
+          booking.tenant_email,
+          booking.tenant_name,
+          booking.property_title,
+          booking.property_location,
+          booking.property_rent,
+          booking.owner_name,
+          owner_notes || undefined
+        );
+      } else if (status === 'Rejected') {
+        notifyTenantBookingRejected(
+          booking.tenant_email,
+          booking.tenant_name,
+          booking.property_title,
+          booking.property_location,
+          booking.owner_name,
+          owner_notes || undefined
+        );
+      }
+    }
+
     res.json({
       success: true,
       message: `Booking ${status.toLowerCase()} successfully`,
-      data: updatedBooking[0]
+      data: booking
     });
   } catch (error) {
     console.error('Update booking status error:', error);
@@ -431,24 +314,6 @@ export const cancelBooking = async (req: AuthRequest, res: Response): Promise<vo
 export const getBookingStats = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const ownerId = req.user?.id;
-
-    // Demo user bypass
-    if (ownerId === 999) {
-      const demoStats = {
-        total_properties: 3,
-        total_requests: 3,
-        pending_requests: 2,
-        approved_bookings: 1,
-        rejected_requests: 0
-      };
-
-      res.json({
-        success: true,
-        message: 'Stats retrieved successfully',
-        data: demoStats
-      });
-      return;
-    }
 
     const [stats] = await pool.query<RowDataPacket[]>(
       `SELECT
