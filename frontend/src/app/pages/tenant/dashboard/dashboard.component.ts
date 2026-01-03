@@ -1,16 +1,19 @@
 import { Component, OnInit, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { interval, Subscription, switchMap, startWith } from 'rxjs';
 import { BookingService } from '../../../core/services/booking.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { RatingService } from '../../../core/services/rating.service';
 import { Booking } from '../../../core/models';
+import { StarRatingComponent } from '../../../shared/components/star-rating/star-rating.component';
 
 @Component({
   selector: 'app-tenant-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatSnackBarModule],
+  imports: [CommonModule, RouterLink, FormsModule, MatSnackBarModule, StarRatingComponent],
   template: `
     <div class="dashboard-page">
       <div class="container">
@@ -82,42 +85,103 @@ import { Booking } from '../../../core/models';
             } @else if (bookings().length > 0) {
               <div class="booking-list">
                 @for (booking of bookings(); track booking.id) {
-                  <div class="booking-item">
-                    <div class="booking-image">
-                       @if (booking.property_photos && booking.property_photos.length > 0) {
-                        <img [src]="booking.property_photos[0]" [alt]="booking.property_title">
-                      } @else {
-                        <span class="material-icons-outlined">home</span>
-                      }
-                    </div>
-                    <div class="booking-info">
-                      <h3>{{ booking.property_title }}</h3>
-                      <p class="location">{{ booking.property_location }}</p>
-                      <div class="booking-meta">
-                        <span class="price">₹{{ booking.property_rent }}/mo</span>
-                        <span class="badge" [class]="booking.status.toLowerCase()">
-                          {{ booking.status }}
-                        </span>
+                  <div class="booking-card" [class.approved]="booking.status === 'Approved'">
+                    <div class="booking-main">
+                      <div class="booking-image">
+                         @if (booking.property_photos && booking.property_photos.length > 0) {
+                          <img [src]="booking.property_photos[0]" [alt]="booking.property_title">
+                        } @else {
+                          <span class="material-icons-outlined">home</span>
+                        }
                       </div>
-                    </div>
-                    <div class="booking-actions-meta">
-                       <div class="booking-details">
-                          <span title="Booking Date">
-                            <span class="material-icons-outlined">calendar_today</span>
-                            {{ booking.request_time | date:'mediumDate' }}
+                      <div class="booking-info">
+                        <h3>{{ booking.property_title }}</h3>
+                        <p class="location">{{ booking.property_location }}</p>
+                        <div class="booking-meta">
+                          <span class="price">₹{{ booking.property_rent | number }}/mo</span>
+                          <span class="badge" [class]="booking.status.toLowerCase()">
+                            {{ booking.status }}
                           </span>
                         </div>
-                        @if (booking.status === 'Pending') {
-                          <button 
-                            class="btn btn-ghost btn-sm btn-error" 
-                            (click)="cancelBooking(booking.id)"
-                            [disabled]="cancellingId() === booking.id"
-                          >
-                            <span class="material-icons-outlined">cancel</span>
-                            {{ cancellingId() === booking.id ? 'Cancelling...' : 'Cancel Request' }}
-                          </button>
-                        }
+                      </div>
+                      <div class="booking-actions-meta">
+                         <div class="booking-details">
+                            <span title="Booking Date">
+                              <span class="material-icons-outlined">calendar_today</span>
+                              {{ booking.request_time | date:'mediumDate' }}
+                            </span>
+                          </div>
+                          @if (booking.status === 'Pending') {
+                            <button 
+                              class="btn btn-ghost btn-sm btn-error" 
+                              (click)="cancelBooking(booking.id)"
+                              [disabled]="cancellingId() === booking.id"
+                            >
+                              <span class="material-icons-outlined">cancel</span>
+                              {{ cancellingId() === booking.id ? 'Cancelling...' : 'Cancel Request' }}
+                            </button>
+                          }
+                      </div>
                     </div>
+                    
+                    <!-- Rating Section for Approved Bookings -->
+                    @if (booking.status === 'Approved') {
+                      <div class="rating-section">
+                        <div class="rating-header">
+                          <span class="material-icons-outlined">star</span>
+                          <h4>Rate Your Experience</h4>
+                        </div>
+                        <div class="rating-groups">
+                          <div class="rating-group">
+                            <label>Rate Property</label>
+                            <div class="rating-input">
+                              <app-star-rating 
+                                [value]="getPropertyRating(booking.property_id)"
+                                (ratingChange)="onRateProperty(booking.property_id, $event)"
+                                [size]="24"
+                              ></app-star-rating>
+                              @if (getPropertyRating(booking.property_id) > 0) {
+                                <span class="rating-saved">✓ Saved</span>
+                              }
+                            </div>
+                          </div>
+                          
+                          @if (booking.owner_id) {
+                            <div class="rating-group">
+                              <label>Rate Owner</label>
+                              <div class="rating-input">
+                                <app-star-rating 
+                                  [value]="getUserRating(booking.owner_id)"
+                                  (ratingChange)="onRateOwner(booking.owner_id, $event)"
+                                  [size]="24"
+                                ></app-star-rating>
+                                @if (getUserRating(booking.owner_id) > 0) {
+                                  <span class="rating-saved">✓ Saved</span>
+                                }
+                              </div>
+                            </div>
+                          }
+                        </div>
+                        
+                        <!-- Comment Section -->
+                        <div class="comment-section">
+                          <textarea 
+                            class="comment-input"
+                            [placeholder]="'Share your experience about ' + booking.property_title + '...'"
+                            [(ngModel)]="propertyComments[booking.property_id]"
+                            rows="2"
+                          ></textarea>
+                          <button 
+                            class="btn btn-primary btn-sm submit-review-btn"
+                            (click)="submitReview(booking.property_id)"
+                            [disabled]="!getPropertyRating(booking.property_id)"
+                          >
+                            <span class="material-icons-outlined">send</span>
+                            Submit Review
+                          </button>
+                        </div>
+                      </div>
+                    }
                   </div>
                 }
               </div>
@@ -220,7 +284,7 @@ import { Booking } from '../../../core/models';
 
     .dashboard-grid {
       display: grid;
-      grid-template-columns: 1fr; /* Full width for tenant since just bookings for now */
+      grid-template-columns: 1fr;
       gap: var(--space-xl);
     }
 
@@ -247,21 +311,31 @@ import { Booking } from '../../../core/models';
     .booking-list {
       display: flex;
       flex-direction: column;
-      gap: var(--space-md);
+      gap: var(--space-lg);
     }
 
-    .booking-item {
+    .booking-card {
+      background: var(--color-off-white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all var(--transition-fast);
+      border: 2px solid transparent;
+
+      &:hover {
+        box-shadow: var(--shadow-md);
+      }
+      
+      &.approved {
+        border-color: rgba(74, 124, 89, 0.3);
+        background: linear-gradient(to bottom, rgba(74, 124, 89, 0.05), var(--color-off-white));
+      }
+    }
+
+    .booking-main {
       display: flex;
       align-items: center;
       gap: var(--space-md);
       padding: var(--space-md);
-      background: var(--color-off-white);
-      border-radius: var(--radius-md);
-      transition: all var(--transition-fast);
-
-      &:hover {
-        background: var(--color-silver);
-      }
     }
 
     .booking-image {
@@ -357,6 +431,130 @@ import { Booking } from '../../../core/models';
       }
     }
 
+    /* Rating Section Styles */
+    .rating-section {
+      padding: var(--space-lg);
+      background: white;
+      border-top: 1px solid rgba(74, 124, 89, 0.2);
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .rating-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+
+      .material-icons-outlined {
+        color: #FFD700;
+        font-size: 1.25rem;
+      }
+
+      h4 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--color-charcoal);
+        margin: 0;
+      }
+    }
+
+    .rating-groups {
+      display: flex;
+      gap: var(--space-2xl);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-lg);
+    }
+
+    .rating-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+
+      label {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--color-medium-gray);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+    }
+
+    .rating-input {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .rating-saved {
+      font-size: 0.75rem;
+      color: var(--color-success);
+      font-weight: 500;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .comment-section {
+      display: flex;
+      gap: var(--space-md);
+      align-items: flex-start;
+
+      @media (max-width: 768px) {
+        flex-direction: column;
+      }
+    }
+
+    .comment-input {
+      flex: 1;
+      padding: var(--space-md);
+      border: 1px solid var(--color-silver);
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-accent);
+      }
+
+      &::placeholder {
+        color: var(--color-medium-gray);
+      }
+    }
+
+    .submit-review-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      white-space: nowrap;
+
+      .material-icons-outlined {
+        font-size: 1rem;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
     .empty-state {
       text-align: center;
       padding: var(--space-2xl);
@@ -396,10 +594,16 @@ export class TenantDashboardComponent implements OnInit, OnDestroy {
   loading = signal(true);
   cancellingId = signal<number | null>(null);
 
+  // Rating states
+  propertyRatings = signal<Record<number, number>>({});
+  userRatings = signal<Record<number, number>>({});
+  propertyComments: Record<number, string> = {};
+
   private pollingSubscription?: Subscription;
 
   constructor(
     private bookingService: BookingService,
+    private ratingService: RatingService,
     private snackBar: MatSnackBar,
     public auth: AuthService
   ) { }
@@ -484,6 +688,110 @@ export class TenantDashboardComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.cancellingId.set(null);
+      }
+    });
+  }
+
+  // Rating Methods
+  getPropertyRating(propertyId: number): number {
+    return this.propertyRatings()[propertyId] || 0;
+  }
+
+  getUserRating(userId: number): number {
+    return this.userRatings()[userId] || 0;
+  }
+
+  onRateProperty(propertyId: number, rating: number) {
+    // Update UI immediately
+    this.propertyRatings.update(prev => ({ ...prev, [propertyId]: rating }));
+    
+    // Save to backend
+    this.ratingService.submitPropertyRating(propertyId, rating, this.propertyComments[propertyId]).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.snackBar.open('Property rating saved!', 'Close', {
+            duration: 2000,
+            horizontalPosition: 'right',
+            verticalPosition: 'bottom',
+            panelClass: ['success-snackbar']
+          });
+        }
+      },
+      error: (err) => {
+        this.snackBar.open(err.error?.message || 'Failed to save rating', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'right',
+          verticalPosition: 'bottom',
+          panelClass: ['error-snackbar']
+        });
+        // Revert on error
+        this.propertyRatings.update(prev => ({ ...prev, [propertyId]: 0 }));
+      }
+    });
+  }
+
+  onRateOwner(ownerId: number, rating: number) {
+    // Update UI immediately
+    this.userRatings.update(prev => ({ ...prev, [ownerId]: rating }));
+    
+    // Save to backend
+    this.ratingService.submitUserRating(ownerId, rating).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.snackBar.open('Owner rating saved!', 'Close', {
+            duration: 2000,
+            horizontalPosition: 'right',
+            verticalPosition: 'bottom',
+            panelClass: ['success-snackbar']
+          });
+        }
+      },
+      error: (err) => {
+        this.snackBar.open(err.error?.message || 'Failed to save rating', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'right',
+          verticalPosition: 'bottom',
+          panelClass: ['error-snackbar']
+        });
+        // Revert on error
+        this.userRatings.update(prev => ({ ...prev, [ownerId]: 0 }));
+      }
+    });
+  }
+
+  submitReview(propertyId: number) {
+    const rating = this.getPropertyRating(propertyId);
+    const comment = this.propertyComments[propertyId] || '';
+
+    if (!rating) {
+      this.snackBar.open('Please select a rating first', 'Close', {
+        duration: 2000,
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom'
+      });
+      return;
+    }
+
+    this.ratingService.submitPropertyRating(propertyId, rating, comment).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.snackBar.open('Review submitted successfully! 🎉', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'right',
+            verticalPosition: 'bottom',
+            panelClass: ['success-snackbar']
+          });
+          // Clear the comment after successful submission
+          this.propertyComments[propertyId] = '';
+        }
+      },
+      error: (err) => {
+        this.snackBar.open(err.error?.message || 'Failed to submit review', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'right',
+          verticalPosition: 'bottom',
+          panelClass: ['error-snackbar']
+        });
       }
     });
   }

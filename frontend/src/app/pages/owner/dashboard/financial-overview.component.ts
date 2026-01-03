@@ -66,7 +66,7 @@ import { FinancialAnalytics } from '../../../core/models';
               <div
                 class="chart-bar"
                 [style.height.%]="getBarHeight(month.revenue)"
-                [title]="'Revenue: $' + month.revenue + ', Expenses: $' + month.expenses"
+                [title]="'Revenue: ₹' + month.revenue + ', Expenses: ₹' + month.expenses"
                 >
                 <div class="revenue-bar" [style.height.%]="getRevenuePercentage(month)"></div>
                 <div class="expenses-bar" [style.height.%]="getExpensesPercentage(month)"></div>

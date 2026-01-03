@@ -1,212 +1,356 @@
 <div class="admin-dashboard">
+    <!-- Animated Background -->
+    <div class="dashboard-bg">
+        <div class="bg-gradient"></div>
+        <div class="bg-pattern"></div>
+    </div>
+
     <div class="container">
-        <div class="dashboard-header">
-            <h1>Admin Dashboard</h1>
-            <p class="subtitle">Manage users, properties, and monitor platform activity</p>
-            <button mat-raised-button color="primary" (click)="manualRefresh()" [disabled]="loading()">
-                <mat-icon>refresh</mat-icon>
-                Refresh Data
-            </button>
-        </div>
+        <!-- Header Section -->
+        <header class="dashboard-header animate-fade-in-down">
+            <div class="header-content">
+                <div class="header-text">
+                    <span class="header-badge">Admin Portal</span>
+                    <h1 class="dashboard-title">Dashboard</h1>
+                    <p class="dashboard-subtitle">Monitor platform activity and manage your rental ecosystem</p>
+                </div>
+                <div class="header-actions">
+                    @if (lastUpdated()) {
+                        <span class="last-updated">
+                            <span class="material-icons-outlined">schedule</span>
+                            {{ lastUpdated() | date:'shortTime' }}
+                        </span>
+                    }
+                    <button class="btn btn-primary btn-icon-text" (click)="manualRefresh()" [disabled]="loading()">
+                        <span class="material-icons-outlined" [class.spin]="loading()">refresh</span>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </header>
 
         @if (loading()) {
-            <div class="loading-container">
-                <mat-spinner></mat-spinner>
+            <div class="loading-container animate-fade-in">
+                <div class="loader">
+                    <div class="loader-ring"></div>
+                    <div class="loader-ring"></div>
+                    <div class="loader-ring"></div>
+                </div>
                 <p>Loading admin data...</p>
             </div>
         } @else if (error()) {
-            <mat-card class="error-card">
-                <mat-card-content>
-                    <mat-icon color="warn">error</mat-icon>
+            <div class="error-container animate-scale-in">
+                <div class="error-card">
+                    <span class="material-icons-outlined error-icon">error_outline</span>
                     <h2>{{ error() }}</h2>
-                    <button mat-raised-button color="primary" (click)="manualRefresh()">
+                    <p>There was a problem loading the dashboard data</p>
+                    <button class="btn btn-primary" (click)="manualRefresh()">
+                        <span class="material-icons-outlined">refresh</span>
                         Retry
                     </button>
-                </mat-card-content>
-            </mat-card>
+                </div>
+            </div>
         } @else {
             <!-- Stats Cards -->
             @if (stats()) {
-                <div class="stats-grid">
-                    <mat-card class="stat-card">
-                        <mat-card-content>
-                            <mat-icon>people</mat-icon>
-                            <div class="stat-value">{{ stats().totalUsers }}</div>
-                            <div class="stat-label">Total Users</div>
-                        </mat-card-content>
-                    </mat-card>
-                    <mat-card class="stat-card">
-                        <mat-card-content>
-                            <mat-icon>home_work</mat-icon>
-                            <div class="stat-value">{{ stats().totalProperties }}</div>
-                            <div class="stat-label">Total Properties</div>
-                        </mat-card-content>
-                    </mat-card>
-                    <mat-card class="stat-card">
-                        <mat-card-content>
-                            <mat-icon>event</mat-icon>
-                            <div class="stat-value">{{ stats().totalBookings }}</div>
-                            <div class="stat-label">Total Bookings</div>
-                        </mat-card-content>
-                    </mat-card>
-                    <mat-card class="stat-card">
-                        <mat-card-content>
-                            <mat-icon>attach_money</mat-icon>
-                            <div class="stat-value">${{ stats().revenueThisMonth | number }}</div>
-                            <div class="stat-label">Revenue This Month</div>
-                        </mat-card-content>
-                    </mat-card>
+                <div class="stats-grid animate-fade-in-up">
+                    <div class="stat-card stat-users">
+                        <div class="stat-icon-wrapper">
+                            <span class="material-icons-outlined">people</span>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value">{{ stats().totalUsers }}</span>
+                            <span class="stat-label">Total Users</span>
+                        </div>
+                        <div class="stat-decoration"></div>
+                    </div>
+                    
+                    <div class="stat-card stat-properties">
+                        <div class="stat-icon-wrapper">
+                            <span class="material-icons-outlined">home_work</span>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value">{{ stats().totalProperties }}</span>
+                            <span class="stat-label">Total Properties</span>
+                        </div>
+                        <div class="stat-decoration"></div>
+                    </div>
+                    
+                    <div class="stat-card stat-bookings">
+                        <div class="stat-icon-wrapper">
+                            <span class="material-icons-outlined">event_available</span>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value">{{ stats().totalBookings }}</span>
+                            <span class="stat-label">Total Bookings</span>
+                        </div>
+                        <div class="stat-decoration"></div>
+                    </div>
+                    
+                    <div class="stat-card stat-revenue">
+                        <div class="stat-icon-wrapper">
+                            <span class="material-icons-outlined">currency_rupee</span>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value">{{ formatCurrency(stats().revenueThisMonth) }}</span>
+                            <span class="stat-label">Revenue This Month</span>
+                        </div>
+                        <div class="stat-decoration"></div>
+                    </div>
                 </div>
             }
 
             <!-- Tabs for Users and Properties -->
-            <mat-tab-group class="admin-tabs">
-                <!-- Users Tab -->
-                <mat-tab label="Users Management">
-                    <mat-card class="table-card">
-                        <mat-card-header>
-                            <mat-card-title>All Users</mat-card-title>
-                            <mat-card-subtitle>Total: {{ users().length }}</mat-card-subtitle>
-                        </mat-card-header>
-                        <mat-card-content>
-                            @if (users().length > 0) {
-                                <table mat-table [dataSource]="users()" class="admin-table">
-                                    <!-- ID Column -->
-                                    <ng-container matColumnDef="id">
-                                        <th mat-header-cell *matHeaderCellDef> ID </th>
-                                        <td mat-cell *matCellDef="let user"> {{ user.id }} </td>
-                                    </ng-container>
-
-                                    <!-- Name Column -->
-                                    <ng-container matColumnDef="name">
-                                        <th mat-header-cell *matHeaderCellDef> Name </th>
-                                        <td mat-cell *matCellDef="let user"> {{ user.name }} </td>
-                                    </ng-container>
-
-                                    <!-- Email Column -->
-                                    <ng-container matColumnDef="email">
-                                        <th mat-header-cell *matHeaderCellDef> Email </th>
-                                        <td mat-cell *matCellDef="let user"> {{ user.email }} </td>
-                                    </ng-container>
-
-                                    <!-- Role Column -->
-                                    <ng-container matColumnDef="role">
-                                        <th mat-header-cell *matHeaderCellDef> Role </th>
-                                        <td mat-cell *matCellDef="let user">
-                                            <mat-chip [color]="user.role === 'admin' ? 'warn' : user.role === 'owner' ? 'primary' : 'accent'" selected>
-                                                {{ user.role }}
-                                            </mat-chip>
-                                        </td>
-                                    </ng-container>
-
-                                    <!-- Created At Column -->
-                                    <ng-container matColumnDef="created_at">
-                                        <th mat-header-cell *matHeaderCellDef> Joined </th>
-                                        <td mat-cell *matCellDef="let user"> {{ user.created_at | date:'short' }} </td>
-                                    </ng-container>
-
-                                    <!-- Actions Column -->
-                                    <ng-container matColumnDef="actions">
-                                        <th mat-header-cell *matHeaderCellDef> Actions </th>
-                                        <td mat-cell *matCellDef="let user">
-                                            <button mat-icon-button color="warn" (click)="deleteUser(user.id)" [disabled]="user.role === 'admin'">
-                                                <mat-icon>delete</mat-icon>
-                                            </button>
-                                        </td>
-                                    </ng-container>
-
-                                    <tr mat-header-row *matHeaderRowDef="usersColumns"></tr>
-                                    <tr mat-row *matRowDef="let row; columns: usersColumns;"></tr>
-                                </table>
-                            } @else {
-                                <div class="empty-state">
-                                    <mat-icon>people_outline</mat-icon>
-                                    <p>No users found</p>
+            <div class="admin-tabs-container animate-fade-in-up delay-1">
+                <mat-tab-group class="admin-tabs" animationDuration="300ms">
+                    <!-- Users Tab -->
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            <span class="material-icons-outlined">people</span>
+                            <span class="tab-label">Users Management</span>
+                            <span class="tab-badge">{{ users().length }}</span>
+                        </ng-template>
+                        
+                        <div class="tab-content">
+                            <div class="table-card">
+                                <div class="table-header">
+                                    <div class="table-title">
+                                        <h3>All Users</h3>
+                                        <span class="subtitle">Manage platform users</span>
+                                    </div>
                                 </div>
-                            }
-                        </mat-card-content>
-                    </mat-card>
-                </mat-tab>
+                                
+                                @if (users().length > 0) {
+                                    <div class="table-wrapper">
+                                        <table mat-table [dataSource]="users()" class="modern-table">
+                                            <!-- ID Column -->
+                                            <ng-container matColumnDef="id">
+                                                <th mat-header-cell *matHeaderCellDef>ID</th>
+                                                <td mat-cell *matCellDef="let user">
+                                                    <span class="id-badge">#{{ user.id }}</span>
+                                                </td>
+                                            </ng-container>
 
-                <!-- Properties Tab -->
-                <mat-tab label="Properties Management">
-                    <mat-card class="table-card">
-                        <mat-card-header>
-                            <mat-card-title>All Properties</mat-card-title>
-                            <mat-card-subtitle>Total: {{ properties().length }}</mat-card-subtitle>
-                        </mat-card-header>
-                        <mat-card-content>
-                            @if (properties().length > 0) {
-                                <table mat-table [dataSource]="properties()" class="admin-table">
-                                    <!-- ID Column -->
-                                    <ng-container matColumnDef="id">
-                                        <th mat-header-cell *matHeaderCellDef> ID </th>
-                                        <td mat-cell *matCellDef="let property"> {{ property.id }} </td>
-                                    </ng-container>
+                                            <!-- Name Column -->
+                                            <ng-container matColumnDef="name">
+                                                <th mat-header-cell *matHeaderCellDef>Name</th>
+                                                <td mat-cell *matCellDef="let user">
+                                                    <div class="user-cell">
+                                                        <div class="user-avatar">{{ user.name?.charAt(0) || 'U' }}</div>
+                                                        <span class="user-name">{{ user.name }}</span>
+                                                    </div>
+                                                </td>
+                                            </ng-container>
 
-                                    <!-- Title Column -->
-                                    <ng-container matColumnDef="title">
-                                        <th mat-header-cell *matHeaderCellDef> Title </th>
-                                        <td mat-cell *matCellDef="let property"> {{ property.title }} </td>
-                                    </ng-container>
+                                            <!-- Email Column -->
+                                            <ng-container matColumnDef="email">
+                                                <th mat-header-cell *matHeaderCellDef>Email</th>
+                                                <td mat-cell *matCellDef="let user">
+                                                    <span class="email-text">{{ user.email }}</span>
+                                                </td>
+                                            </ng-container>
 
-                                    <!-- Location Column -->
-                                    <ng-container matColumnDef="location">
-                                        <th mat-header-cell *matHeaderCellDef> Location </th>
-                                        <td mat-cell *matCellDef="let property"> {{ property.location }} </td>
-                                    </ng-container>
+                                            <!-- Role Column -->
+                                            <ng-container matColumnDef="role">
+                                                <th mat-header-cell *matHeaderCellDef>Role</th>
+                                                <td mat-cell *matCellDef="let user">
+                                                    <span class="role-badge" [class]="user.role">
+                                                        {{ user.role | titlecase }}
+                                                    </span>
+                                                </td>
+                                            </ng-container>
 
-                                    <!-- Rent Column -->
-                                    <ng-container matColumnDef="rent">
-                                        <th mat-header-cell *matHeaderCellDef> Rent </th>
-                                        <td mat-cell *matCellDef="let property"> ${{ property.rent }}/mo </td>
-                                    </ng-container>
+                                            <!-- Created At Column -->
+                                            <ng-container matColumnDef="created_at">
+                                                <th mat-header-cell *matHeaderCellDef>Joined</th>
+                                                <td mat-cell *matCellDef="let user">
+                                                    <span class="date-text">{{ user.created_at | date:'mediumDate' }}</span>
+                                                </td>
+                                            </ng-container>
 
-                                    <!-- Owner Column -->
-                                    <ng-container matColumnDef="owner_name">
-                                        <th mat-header-cell *matHeaderCellDef> Owner </th>
-                                        <td mat-cell *matCellDef="let property"> {{ property.owner_name }} </td>
-                                    </ng-container>
+                                            <!-- Actions Column -->
+                                            <ng-container matColumnDef="actions">
+                                                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                                                <td mat-cell *matCellDef="let user">
+                                                    <button 
+                                                        class="action-btn delete" 
+                                                        (click)="deleteUser(user.id)" 
+                                                        [disabled]="user.role === 'admin'"
+                                                        [title]="user.role === 'admin' ? 'Cannot delete admin users' : 'Delete user'"
+                                                    >
+                                                        <span class="material-icons-outlined">delete_outline</span>
+                                                    </button>
+                                                </td>
+                                            </ng-container>
 
-                                    <!-- Status Column -->
-                                    <ng-container matColumnDef="status">
-                                        <th mat-header-cell *matHeaderCellDef> Status </th>
-                                        <td mat-cell *matCellDef="let property">
-                                            <mat-chip [color]="property.status === 'available' ? 'primary' : 'warn'" selected>
-                                                {{ property.status }}
-                                            </mat-chip>
-                                        </td>
-                                    </ng-container>
+                                            <tr mat-header-row *matHeaderRowDef="usersColumns"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: usersColumns;" class="table-row"></tr>
+                                        </table>
+                                    </div>
+                                } @else {
+                                    <div class="empty-state">
+                                        <span class="material-icons-outlined">people_outline</span>
+                                        <p>No users found</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </mat-tab>
 
-                                    <!-- Actions Column -->
-                                    <ng-container matColumnDef="actions">
-                                        <th mat-header-cell *matHeaderCellDef> Actions </th>
-                                        <td mat-cell *matCellDef="let property">
-                                            <button mat-icon-button color="warn" (click)="deleteProperty(property.id)">
-                                                <mat-icon>delete</mat-icon>
-                                            </button>
-                                        </td>
-                                    </ng-container>
-
-                                    <tr mat-header-row *matHeaderRowDef="propertiesColumns"></tr>
-                                    <tr mat-row *matRowDef="let row; columns: propertiesColumns;"></tr>
-                                </table>
-                            } @else {
-                                <div class="empty-state">
-                                    <mat-icon>home_work</mat-icon>
-                                    <p>No properties found</p>
+                    <!-- Properties Tab -->
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            <span class="material-icons-outlined">home_work</span>
+                            <span class="tab-label">Properties Management</span>
+                            <span class="tab-badge">{{ properties().length }}</span>
+                        </ng-template>
+                        
+                        <div class="tab-content">
+                            <div class="table-card">
+                                <div class="table-header">
+                                    <div class="table-title">
+                                        <h3>All Properties</h3>
+                                        <span class="subtitle">Manage property listings</span>
+                                    </div>
                                 </div>
-                            }
-                        </mat-card-content>
-                    </mat-card>
-                </mat-tab>
-            </mat-tab-group>
+                                
+                                @if (properties().length > 0) {
+                                    <div class="table-wrapper">
+                                        <table mat-table [dataSource]="properties()" class="modern-table">
+                                            <!-- ID Column -->
+                                            <ng-container matColumnDef="id">
+                                                <th mat-header-cell *matHeaderCellDef>ID</th>
+                                                <td mat-cell *matCellDef="let property">
+                                                    <span class="id-badge">#{{ property.id }}</span>
+                                                </td>
+                                            </ng-container>
 
-            @if (lastUpdated()) {
-                <div class="last-updated">
-                    Last updated: {{ lastUpdated() | date:'medium' }}
-                </div>
-            }
+                                            <!-- Title Column -->
+                                            <ng-container matColumnDef="title">
+                                                <th mat-header-cell *matHeaderCellDef>Property</th>
+                                                <td mat-cell *matCellDef="let property">
+                                                    <span class="property-title">{{ property.title }}</span>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Location Column -->
+                                            <ng-container matColumnDef="location">
+                                                <th mat-header-cell *matHeaderCellDef>Location</th>
+                                                <td mat-cell *matCellDef="let property">
+                                                    <div class="location-cell">
+                                                        <span class="material-icons-outlined">location_on</span>
+                                                        {{ property.location }}
+                                                    </div>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Rent Column -->
+                                            <ng-container matColumnDef="rent">
+                                                <th mat-header-cell *matHeaderCellDef>Rent</th>
+                                                <td mat-cell *matCellDef="let property">
+                                                    <span class="rent-amount">{{ formatCurrency(property.rent) }}<small>/mo</small></span>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Owner Column -->
+                                            <ng-container matColumnDef="owner_name">
+                                                <th mat-header-cell *matHeaderCellDef>Owner</th>
+                                                <td mat-cell *matCellDef="let property">
+                                                    <span class="owner-name">{{ property.owner_name || 'N/A' }}</span>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Status Column -->
+                                            <ng-container matColumnDef="status">
+                                                <th mat-header-cell *matHeaderCellDef>Status</th>
+                                                <td mat-cell *matCellDef="let property">
+                                                    <span class="status-badge" [class]="property.is_available ? 'available' : 'rented'">
+                                                        {{ property.is_available ? 'Available' : 'Rented' }}
+                                                    </span>
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Actions Column -->
+                                            <ng-container matColumnDef="actions">
+                                                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                                                <td mat-cell *matCellDef="let property">
+                                                    <button 
+                                                        class="action-btn delete" 
+                                                        (click)="deleteProperty(property.id)"
+                                                        title="Delete property"
+                                                    >
+                                                        <span class="material-icons-outlined">delete_outline</span>
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="propertiesColumns"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: propertiesColumns;" class="table-row"></tr>
+                                        </table>
+                                    </div>
+                                } @else {
+                                    <div class="empty-state">
+                                        <span class="material-icons-outlined">home_work</span>
+                                        <p>No properties found</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </mat-tab>
+
+                    <!-- Bookings Tab -->
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            <span class="material-icons-outlined">event_note</span>
+                            <span class="tab-label">Bookings</span>
+                            <span class="tab-badge">{{ bookings().length }}</span>
+                        </ng-template>
+                        
+                        <div class="tab-content">
+                            <div class="table-card">
+                                <div class="table-header">
+                                    <div class="table-title">
+                                        <h3>All Bookings</h3>
+                                        <span class="subtitle">Monitor booking requests</span>
+                                    </div>
+                                </div>
+                                
+                                @if (bookings().length > 0) {
+                                    <div class="bookings-grid">
+                                        @for (booking of bookings(); track booking.id) {
+                                            <div class="booking-card" [class]="booking.status.toLowerCase()">
+                                                <div class="booking-header">
+                                                    <span class="booking-id">#{{ booking.id }}</span>
+                                                    <span class="booking-status">{{ booking.status }}</span>
+                                                </div>
+                                                <div class="booking-body">
+                                                    <div class="booking-detail">
+                                                        <span class="label">Property</span>
+                                                        <span class="value">ID: {{ booking.property_id }}</span>
+                                                    </div>
+                                                    <div class="booking-detail">
+                                                        <span class="label">Tenant</span>
+                                                        <span class="value">ID: {{ booking.tenant_id }}</span>
+                                                    </div>
+                                                    <div class="booking-detail">
+                                                        <span class="label">Requested</span>
+                                                        <span class="value">{{ booking.request_time | date:'shortDate' }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                } @else {
+                                    <div class="empty-state">
+                                        <span class="material-icons-outlined">event_busy</span>
+                                        <p>No bookings found</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
         }
     </div>
 </div>

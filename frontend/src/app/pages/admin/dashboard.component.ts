@@ -25,7 +25,7 @@ import { startWith, switchMap } from 'rxjs/operators';
         MatIconModule
     ],
     templateUrl: './dashboard.component.html',
-    styleUrl: './dashboard.component.scss'
+    styleUrls: ['./dashboard.component.scss']
 })
 export class AdminDashboardComponent implements OnInit, OnDestroy {
     stats = signal<any>(null);

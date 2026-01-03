@@ -46,6 +46,7 @@ export interface Booking {
   id: number;
   property_id: number;
   tenant_id: number;
+  owner_id?: number;
   status: 'Pending' | 'Approved' | 'Rejected';
   message?: string;
   move_in_date?: string;
